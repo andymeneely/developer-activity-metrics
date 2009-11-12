@@ -8,6 +8,9 @@ public class DeveloperNetwork {
 	public DeveloperNetwork(Graph<Developer, FileSet> graph) {
 		this.graph = graph;
 	}
-	
-	
+
+	public Graph<Developer, FileSet> getGraph() {
+		return graph;
+	}
+
 }

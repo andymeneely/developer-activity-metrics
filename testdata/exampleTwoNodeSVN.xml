@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<log>
+	<logentry revision="10055">
+		<author>andy</author>
+		<date>2009-08-25T19:39:32.337370Z</date>
+		<paths>
+			<path action="M">
+				/file1.txt
+			</path>
+		</paths>
+		<msg>Followup fix for adding explicit call to the Response
+			object in the startup filter to force text/html content type - #1746
+		</msg>
+	</logentry>
+	<logentry revision="10048">
+		<author>bob</author>
+		<date>2009-08-25T18:06:59.823373Z</date>
+		<paths>
+			<path action="M">
+				/file1.txt
+			</path>
+			<path action="M">
+				/file2.txt
+			</path>
+		</paths>
+		<msg>Added explicit call to the Response object in the startup
+			filter to force text/html content type - #1746</msg>
+	</logentry>
+</log>
