@@ -4,6 +4,6 @@ import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.DeveloperNetwork;
 
 public interface IDeveloperNetworkFactory {
 
-	public DeveloperNetwork build();
+	public DeveloperNetwork build() throws Exception;
 	
 }
