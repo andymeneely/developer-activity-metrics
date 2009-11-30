@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -27,6 +28,7 @@ import edu.ncsu.csc.realsearch.apmeneel.devactivity.DBUtil;
 import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.DeveloperNetwork;
 
 public class SVNXMLDeveloperFactory implements IDeveloperNetworkFactory {
+	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
 	private final File input;
 	private final DBDevAdjacencyFactory factory;
@@ -62,9 +64,7 @@ public class SVNXMLDeveloperFactory implements IDeveloperNetworkFactory {
 			} else if ("author".equals(n.getNodeName())) {
 				author = n.getTextContent();
 			} else if ("date".equals(n.getNodeName())) {
-				 SimpleDateFormat format = new SimpleDateFormat("yyyy-dd-MM");
-				
-				// TODO parse the date
+				date = parseDate(filter(n.getTextContent()));
 			} else if ("msg".equals(n.getNodeName())) {
 				message = n.getTextContent();
 				svnLogInsert.setString(1, revision);
@@ -99,6 +99,15 @@ public class SVNXMLDeveloperFactory implements IDeveloperNetworkFactory {
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		Document document = builder.parse(new InputSource(new BufferedReader(new FileReader(string))));
 		return document;
+	}
+
+	public static Date parseDate(String dateStr) {
+		try {
+			java.util.Date parsedDate = DATE_FORMAT.parse(dateStr);
+			return new Date(parsedDate.getTime());
+		} catch (ParseException e) {
+			return null;
+		}
 	}
 
 }
