@@ -26,4 +26,9 @@ public class FileSet {
 		}
 		return isEqual;
 	}
+
+	@Override
+	public String toString() {
+		return files.toString();
+	}
 }
