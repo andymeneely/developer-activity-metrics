@@ -2,6 +2,7 @@ package edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.visualize;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -11,14 +12,19 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.FileReader;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JApplet;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JPanel;
 
 import edu.ncsu.csc.realsearch.apmeneel.devactivity.DBUtil;
@@ -27,9 +33,13 @@ import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.DeveloperNetwork;
 import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.FileSet;
 import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.factory.DBDevAdjacencyFactory;
 import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.factory.SVNXMLDeveloperFactory;
+import edu.uci.ics.jung.algorithms.layout.CircleLayout;
+import edu.uci.ics.jung.algorithms.layout.FRLayout;
+import edu.uci.ics.jung.algorithms.layout.ISOMLayout;
 import edu.uci.ics.jung.algorithms.layout.KKLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.layout.SpringLayout;
+import edu.uci.ics.jung.algorithms.layout.SpringLayout2;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
 import edu.uci.ics.jung.visualization.Layer;
@@ -41,8 +51,10 @@ import edu.uci.ics.jung.visualization.control.ModalLensGraphMouse;
 import edu.uci.ics.jung.visualization.control.ScalingControl;
 import edu.uci.ics.jung.visualization.decorators.EdgeShape;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
+import edu.uci.ics.jung.visualization.layout.LayoutTransition;
 import edu.uci.ics.jung.visualization.transform.shape.HyperbolicShapeTransformer;
 import edu.uci.ics.jung.visualization.transform.shape.ViewLensSupport;
+import edu.uci.ics.jung.visualization.util.Animator;
 
 public class DeveloperNetworkVisualize extends JApplet {
 
@@ -53,11 +65,23 @@ public class DeveloperNetworkVisualize extends JApplet {
 	private Layout<Developer, FileSet> layout;
 	private ViewLensSupport<Developer, FileSet> hyperbolicViewSupport;
 
+	@SuppressWarnings("unchecked")
+	private static Class<? extends Layout>[] getCombos() {
+		List<Class<? extends Layout>> layouts = new ArrayList<Class<? extends Layout>>();
+		layouts.add(KKLayout.class);
+		layouts.add(FRLayout.class);
+		layouts.add(CircleLayout.class);
+		layouts.add(SpringLayout.class);
+		layouts.add(SpringLayout2.class);
+		layouts.add(ISOMLayout.class);
+		return layouts.toArray(new Class[0]);
+	}
+
 	public DeveloperNetworkVisualize(DeveloperNetwork dn) {
 		graph = dn.getGraph();
 
-//		layout = new KKLayout<Developer, FileSet>(graph);
-		layout = new  SpringLayout<Developer, FileSet>(graph);
+		// layout = new KKLayout<Developer, FileSet>(graph);
+		layout = new SpringLayout<Developer, FileSet>(graph);
 
 		vv = new VisualizationViewer<Developer, FileSet>(layout, new Dimension(600, 600));
 		vv.setBackground(Color.white);
@@ -90,6 +114,20 @@ public class DeveloperNetworkVisualize extends JApplet {
 
 		vv.scaleToLayout(scaler);
 
+		Class[] combos = getCombos();
+		final JComboBox layoutBox = new JComboBox(combos);
+		// use a renderer to shorten the layout name presentation
+		layoutBox.setRenderer(new DefaultListCellRenderer() {
+			public Component getListCellRendererComponent(JList list, Object value, int index,
+					boolean isSelected, boolean cellHasFocus) {
+				String valueString = value.toString();
+				valueString = valueString.substring(valueString.lastIndexOf('.') + 1);
+				return super.getListCellRendererComponent(list, valueString, index, isSelected, cellHasFocus);
+			}
+		});
+		layoutBox.addActionListener(new LayoutChooser(layoutBox, vv, graph));
+		layoutBox.setSelectedItem(FRLayout.class);
+
 		JButton plus = new JButton("+");
 		plus.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -118,8 +156,48 @@ public class DeveloperNetworkVisualize extends JApplet {
 		scaleGrid.add(minus);
 		controls.add(scaleGrid);
 		controls.add(modeBox);
+		controls.add(layoutBox);
 		controls.add(hyperView);
 		content.add(controls, BorderLayout.SOUTH);
+	}
+
+	private static final class LayoutChooser implements ActionListener {
+		private final JComboBox jcb;
+		private final VisualizationViewer<Developer, FileSet> vv;
+		private final Graph<Developer, FileSet> graph2;
+
+		private LayoutChooser(JComboBox jcb, VisualizationViewer<Developer, FileSet> vv,
+				Graph<Developer, FileSet> graph) {
+			super();
+			this.jcb = jcb;
+			this.vv = vv;
+			graph2 = graph;
+		}
+
+		public void actionPerformed(ActionEvent arg0) {
+			Object[] constructorArgs = { graph2 };
+
+			Class<? extends Layout<Developer, FileSet>> layoutC = (Class<? extends Layout<Developer, FileSet>>) jcb
+					.getSelectedItem();
+			try {
+				Constructor<? extends Layout<Developer, FileSet>> constructor = layoutC
+						.getConstructor(new Class[] { Graph.class });
+				Object o = constructor.newInstance(constructorArgs);
+				Layout<Developer, FileSet> l = (Layout<Developer, FileSet>) o;
+				l.setInitializer(vv.getGraphLayout());
+				l.setSize(vv.getSize());
+
+				LayoutTransition<Developer, FileSet> lt = new LayoutTransition<Developer, FileSet>(vv, vv
+						.getGraphLayout(), l);
+				Animator animator = new Animator(lt);
+				animator.start();
+				vv.getRenderContext().getMultiLayerTransformer().setToIdentity();
+				vv.repaint();
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**
@@ -130,7 +208,8 @@ public class DeveloperNetworkVisualize extends JApplet {
 		props.load(new FileReader("devactivitytests.properties"));
 		DBUtil dbUtil = new DBUtil(props);
 		dbUtil.executeSQLFile("sql/createSVNRepoLog.sql");
-		File input = new File("C:/data/openmrs/openmrs-svnlog-full-verbose.xml");
+//		File input = new File("testdata/exampleTwoNodeSVN.xml");
+		 File input = new File("C:/data/openmrs/openmrs-svnlog-full-verbose.xml");
 
 		JFrame frame = new JFrame();
 		Container content = frame.getContentPane();
