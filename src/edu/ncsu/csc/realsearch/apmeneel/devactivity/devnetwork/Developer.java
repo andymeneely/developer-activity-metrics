@@ -8,10 +8,9 @@ public class Developer {
 	}
 
 	public Developer(String name) {
-		super();
 		this.name = name;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		return obj != null && obj.getClass().equals(this.getClass()) && this.equals((Developer) obj);
@@ -19,5 +18,10 @@ public class Developer {
 
 	private boolean equals(Developer other) {
 		return name.equals(other.name);
+	}
+
+	@Override
+	public int hashCode() {
+		return name.hashCode();
 	}
 }
