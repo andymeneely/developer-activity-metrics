@@ -20,9 +20,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-
-import org.apache.commons.collections15.functors.ConstantTransformer;
 
 import edu.ncsu.csc.realsearch.apmeneel.devactivity.DBUtil;
 import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.Developer;
@@ -31,6 +28,8 @@ import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.FileSet;
 import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.factory.DBDevAdjacencyFactory;
 import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.factory.SVNXMLDeveloperFactory;
 import edu.uci.ics.jung.algorithms.layout.KKLayout;
+import edu.uci.ics.jung.algorithms.layout.Layout;
+import edu.uci.ics.jung.algorithms.layout.SpringLayout;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
 import edu.uci.ics.jung.visualization.Layer;
@@ -47,29 +46,32 @@ import edu.uci.ics.jung.visualization.transform.shape.ViewLensSupport;
 
 public class DeveloperNetworkVisualize extends JApplet {
 
+	private static final long serialVersionUID = 4772441438424199758L;
+
 	private Graph<Developer, FileSet> graph;
 	private VisualizationViewer<Developer, FileSet> vv;
-	private KKLayout<Developer, FileSet> layout;
+	private Layout<Developer, FileSet> layout;
 	private ViewLensSupport<Developer, FileSet> hyperbolicViewSupport;
 
 	public DeveloperNetworkVisualize(DeveloperNetwork dn) {
 		graph = dn.getGraph();
 
-		layout = new KKLayout<Developer, FileSet>(graph);
+//		layout = new KKLayout<Developer, FileSet>(graph);
+		layout = new  SpringLayout<Developer, FileSet>(graph);
 
 		vv = new VisualizationViewer<Developer, FileSet>(layout, new Dimension(600, 600));
 		vv.setBackground(Color.white);
-		vv.getRenderContext().setEdgeShapeTransformer(new EdgeShape.Line());
-		vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller());
+		vv.getRenderContext().setEdgeShapeTransformer(new EdgeShape.Line<Developer, FileSet>());
+		vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<Developer>());
 		// add a listener for ToolTips
-		vv.setVertexToolTipTransformer(new ToStringLabeller());
-		vv.getRenderContext().setArrowFillPaintTransformer(new ConstantTransformer(Color.lightGray));
+		vv.setVertexToolTipTransformer(new ToStringLabeller<Developer>());
+		vv.setEdgeToolTipTransformer(new ToStringLabeller<FileSet>());
 
 		Container content = getContentPane();
 		final GraphZoomScrollPane panel = new GraphZoomScrollPane(vv);
 		content.add(panel);
 
-		final DefaultModalGraphMouse graphMouse = new DefaultModalGraphMouse();
+		final DefaultModalGraphMouse<Developer, FileSet> graphMouse = new DefaultModalGraphMouse<Developer, FileSet>();
 
 		vv.setGraphMouse(graphMouse);
 		vv.addKeyListener(graphMouse.getModeKeyListener());
