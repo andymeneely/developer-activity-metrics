@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -63,7 +62,7 @@ public class SVNXMLDeveloperFactory implements IDeveloperNetworkFactory {
 			} else if ("author".equals(n.getNodeName())) {
 				author = n.getTextContent();
 			} else if ("date".equals(n.getNodeName())) {
-				// new SimpleDateFormat("")
+				 SimpleDateFormat format = new SimpleDateFormat("yyyy-dd-MM");
 				
 				// TODO parse the date
 			} else if ("msg".equals(n.getNodeName())) {
@@ -76,6 +75,7 @@ public class SVNXMLDeveloperFactory implements IDeveloperNetworkFactory {
 			} else if ("path".equals(n.getNodeName())) {
 				String action = n.getAttributes().getNamedItem("action").getNodeValue();
 				String filepath = n.getTextContent();
+				filepath = filter(filepath);
 				svnLogFilesInsert.setString(1, revision);
 				svnLogFilesInsert.setString(2, filepath);
 				svnLogFilesInsert.setString(3, action);
@@ -86,6 +86,10 @@ public class SVNXMLDeveloperFactory implements IDeveloperNetworkFactory {
 		svnLogFilesInsert.executeBatch();
 		conn.close();
 		return factory.build();
+	}
+
+	private String filter(String filepath) {
+		return filepath.trim();
 	}
 
 	public static Document getXMLDocument(File string) throws ParserConfigurationException, SAXException,

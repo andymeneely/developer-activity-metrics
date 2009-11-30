@@ -29,19 +29,19 @@ public class SVNXMLDevFactoryTest {
 		dbUtil = new DBUtil(props);
 		dbUtil.executeSQLFile("sql/createSVNRepoLog.sql");
 	}
-	
+
 	@Test
 	public void exampleTwoNode() throws Exception {
 		File input = new File("testdata/exampleTwoNodeSVN.xml");
-		Graph<Developer, FileSet> graph = new SVNXMLDeveloperFactory(input, new DBDevAdjacencyFactory(dbUtil ))
+		Graph<Developer, FileSet> graph = new SVNXMLDeveloperFactory(input, new DBDevAdjacencyFactory(dbUtil))
 				.build().getGraph();
-		assertEquals("Two developers", graph.getVertexCount());
-		assertEquals("andy exists", graph.getVertices().contains("andy"));
-		assertEquals("bob exists", graph.getVertices().contains("bob"));
+		assertEquals("Two developers", 2, graph.getVertexCount());
+		assertTrue("andy exists", graph.getVertices().contains(new Developer("andy")));
+		assertTrue("bob exists", graph.getVertices().contains(new Developer("bob")));
 		Developer[] d = graph.getVertices().toArray(new Developer[2]);
 		FileSet edge = graph.findEdge(d[0], d[1]);
 		assertNotNull("edge exists", edge);
-		assertEquals("1 file", edge.getFiles().size());
+		assertEquals("1 file", 1, edge.getFiles().size());
 		assertEquals("Contains file1.txt", "/file1.txt", edge.getFiles().get(0));
 	}
 }

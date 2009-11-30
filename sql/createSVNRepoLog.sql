@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS RepoLog;
+DROP VIEW IF EXISTS RepoLog;
 DROP TABLE IF EXISTS SVNLog;
 DROP TABLE IF EXISTS SVNLogFiles;
 
@@ -23,12 +23,8 @@ CREATE TABLE SVNLogFiles (
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM;
 
-CREATE TABLE RepoLog AS
+CREATE VIEW RepoLog AS
 	SELECT l.id, l.revision, l.authorname, l.authordate, l.message, lf.filepath, lf.Action 
 	FROM SVNLog l, SVNLogFiles lf
   		WHERE lf.revision=l.revision;
 
-CREATE INDEX RepoLogIndexFilepath USING BTREE ON RepoLog(Filepath);
-CREATE INDEX RepoLogIndexAuthorname USING BTREE ON RepoLog(Authorname);
-CREATE INDEX RepoLogIndexCommit USING BTREE ON RepoLog(Revision);
-OPTIMIZE TABLE RepoLog;

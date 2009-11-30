@@ -1,7 +1,17 @@
 package edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.factory;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Arrays;
+
+import com.mysql.jdbc.Connection;
+
 import edu.ncsu.csc.realsearch.apmeneel.devactivity.DBUtil;
+import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.Developer;
 import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.DeveloperNetwork;
+import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.FileSet;
+import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 
 public class DBDevAdjacencyFactory implements IDeveloperNetworkFactory {
 
@@ -9,12 +19,37 @@ public class DBDevAdjacencyFactory implements IDeveloperNetworkFactory {
 
 	public DBDevAdjacencyFactory(DBUtil dbUtil) {
 		this.dbUtil = dbUtil;
-
 	}
 
 	@Override
-	public DeveloperNetwork build() {
-		throw new IllegalStateException("unimplemented!");
+	public DeveloperNetwork build() throws Exception {
+		dbUtil.executeSQLFile("sql/devAdjacency.sql");
+		Graph<Developer, FileSet> graph = new UndirectedSparseGraph<Developer, FileSet>();
+		Connection conn = dbUtil.getConnection();
+		addVertices(graph, conn);
+		addEdges(graph, conn);
+		conn.close();
+		return new DeveloperNetwork(graph);
+	}
+
+	private void addVertices(Graph<Developer, FileSet> graph, Connection conn) throws SQLException {
+		ResultSet rs = conn.createStatement().executeQuery("SELECT DISTINCT authorname FROM repolog");
+		while (rs.next()) {
+			Developer dev = new Developer(rs.getString("authorname").toLowerCase());
+			graph.addVertex(dev);
+		}
+	}
+
+	private void addEdges(Graph<Developer, FileSet> graph, Connection conn) throws SQLException {
+		ResultSet rs = conn.createStatement().executeQuery("SELECT dev1,dev2, num, files FROM devadjacency");
+		while (rs.next()) {
+			Developer dev1 = new Developer(rs.getString("dev1").toLowerCase());
+			Developer dev2 = new Developer(rs.getString("dev2").toLowerCase());
+			FileSet fileSet = new FileSet();
+			String files = rs.getString("files");			
+			fileSet.getFiles().addAll(Arrays.asList(files.split("\n")));
+			graph.addEdge(fileSet, dev1, dev2);
+		}
 	}
 
 	public DBUtil getDbUtil() {

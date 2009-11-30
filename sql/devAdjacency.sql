@@ -8,6 +8,7 @@ CREATE TABLE NetworkRepoLog AS
 	
 CREATE INDEX NetworkRepoLogAuthor USING BTREE ON NetworkRepoLog(authorname);
 CREATE INDEX NetworkRepoLogFile USING BTREE ON NetworkRepoLog(filepath);
+OPTIMIZE TABLE NetworkRepoLog;
 
 CREATE VIEW ZUngroupedDevAdjacency AS
 	SELECT DISTINCT c1.authorname AS dev1,
