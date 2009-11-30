@@ -11,4 +11,13 @@ public class Developer {
 		super();
 		this.name = name;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass().equals(this.getClass()) && this.equals((Developer) obj);
+	}
+
+	private boolean equals(Developer other) {
+		return name.equals(other.name);
+	}
 }
