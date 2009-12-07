@@ -17,6 +17,8 @@ import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.Statement;
 
 public class DBUtil {
+	private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(DBUtil.class);
+
 	static {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
@@ -52,7 +54,7 @@ public class DBUtil {
 		Connection conn = getConnection();
 		PreparedStatement ps = null;
 		for (String createQuery : queries) {
-			System.out.println("\tExecuting: " + createQuery);
+			log.debug("Executing: " + createQuery);
 			ps = conn.prepareStatement(createQuery);
 			ps.execute();
 			ps.close();
@@ -85,6 +87,7 @@ public class DBUtil {
 
 	public void loadLocalFile(Statement stmt, String file, String table) throws Exception {
 		stmt.setLocalInfileInputStream(new FileInputStream(file));
-		stmt.execute("LOAD DATA LOCAL INFILE '' " + "INTO TABLE " + table + " FIELDS ENCLOSED BY '\"' IGNORE 1 LINES");
+		stmt.execute("LOAD DATA LOCAL INFILE '' " + "INTO TABLE " + table
+				+ " FIELDS ENCLOSED BY '\"' IGNORE 1 LINES");
 	}
 }
