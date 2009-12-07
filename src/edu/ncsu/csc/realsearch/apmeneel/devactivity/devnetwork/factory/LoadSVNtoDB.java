@@ -40,6 +40,7 @@ public class LoadSVNtoDB{
 	}
 
 	public void run() throws Exception {
+		log.debug("Opening SVN XML document...");
 		Document document = getXMLDocument(input);
 		DocumentTraversal traversal = (DocumentTraversal) document;
 
@@ -55,6 +56,7 @@ public class LoadSVNtoDB{
 						+ "VALUES (?,?,?,?)");
 		PreparedStatement svnLogFilesInsert = conn
 				.prepareStatement("INSERT INTO SVNLogFiles(Revision, Filepath, Action) " + "VALUES (?,?,?)");
+		log.debug("Traversing the SVN XML document...");
 		for (Node n = iterator.nextNode(); n != null; n = iterator.nextNode()) {
 			if ("logentry".equals(n.getNodeName())) {
 				revision = n.getAttributes().getNamedItem("revision").getNodeValue();
@@ -79,6 +81,7 @@ public class LoadSVNtoDB{
 				svnLogFilesInsert.addBatch();
 			}
 		}
+		log.debug("Executing batch inserts...");
 		svnLogInsert.executeBatch();
 		svnLogFilesInsert.executeBatch();
 		conn.close();
