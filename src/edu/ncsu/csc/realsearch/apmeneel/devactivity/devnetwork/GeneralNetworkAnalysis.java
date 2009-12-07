@@ -1,6 +1,5 @@
 package edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -9,7 +8,6 @@ import java.util.Properties;
 
 import edu.ncsu.csc.realsearch.apmeneel.devactivity.DBUtil;
 import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.factory.DBDevAdjacencyFactory;
-import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.factory.SVNXMLDeveloperFactory;
 import edu.uci.ics.jung.algorithms.shortestpath.DistanceStatistics;
 import edu.uci.ics.jung.algorithms.shortestpath.UnweightedShortestPath;
 import edu.uci.ics.jung.graph.Graph;
