@@ -5,8 +5,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -48,7 +48,7 @@ public class LoadSVNtoDB{
 				NodeFilter.SHOW_ELEMENT, null, true);
 		String author = "Oops - not loaded!";
 		String revision = "Oops - not loaded!";
-		Date date = null;
+		Timestamp date = null;
 		String message = "Oops - not loaded!";
 		Connection conn = dbUtil.getConnection();
 		PreparedStatement svnLogInsert = conn
@@ -68,7 +68,7 @@ public class LoadSVNtoDB{
 				message = n.getTextContent();
 				svnLogInsert.setString(1, revision);
 				svnLogInsert.setString(2, author);
-				svnLogInsert.setDate(3, date);
+				svnLogInsert.setTimestamp(3, date);
 				svnLogInsert.setString(4, message);
 				svnLogInsert.addBatch();
 			} else if ("path".equals(n.getNodeName())) {
@@ -84,7 +84,7 @@ public class LoadSVNtoDB{
 		log.debug("Executing batch inserts...");
 		svnLogInsert.executeBatch();
 		svnLogFilesInsert.executeBatch();
-		conn.close();
+		DBUtil.closeConnection(conn, svnLogFilesInsert, svnLogInsert);
 	}
 
 	public static Document getXMLDocument(File string) throws ParserConfigurationException, SAXException,
@@ -96,10 +96,10 @@ public class LoadSVNtoDB{
 		return document;
 	}
 
-	public static Date parseDate(String dateStr) {
+	public static Timestamp parseDate(String dateStr) {
 		try {
 			java.util.Date parsedDate = DATE_FORMAT.parse(dateStr);
-			return new Date(parsedDate.getTime());
+			return new Timestamp(parsedDate.getTime());
 		} catch (ParseException e) {
 			return null;
 		}

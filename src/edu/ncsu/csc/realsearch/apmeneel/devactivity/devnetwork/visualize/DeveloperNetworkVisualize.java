@@ -27,6 +27,8 @@ import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
 
+import org.apache.log4j.PropertyConfigurator;
+
 import edu.ncsu.csc.realsearch.apmeneel.devactivity.DBUtil;
 import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.Developer;
 import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.DeveloperNetwork;
@@ -205,17 +207,20 @@ public class DeveloperNetworkVisualize extends JApplet {
 	 */
 	public static void main(String[] args) throws Exception {
 		Properties props = new Properties();
-		props.load(new FileReader("devactivitytests.properties"));
+		props.load(new FileReader("devactivity.properties"));
+		PropertyConfigurator.configure(props);
 		DBUtil dbUtil = new DBUtil(props);
-		dbUtil.executeSQLFile("sql/createSVNRepoLog.sql");
-//		File input = new File("testdata/exampleTwoNodeSVN.xml");
-		 File input = new File("C:/data/openmrs/openmrs-svnlog-full-verbose.xml");
+		// dbUtil.executeSQLFile("sql/createSVNRepoLog.sql");
+		// File input = new File("testdata/exampleTwoNodeSVN.xml");
+		// File input = new File("C:/data/openmrs/openmrs-svnlog-full-verbose.xml");
 
 		JFrame frame = new JFrame();
 		Container content = frame.getContentPane();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		content.add(new DeveloperNetworkVisualize(new DeveloperNetwork(new SVNXMLDeveloperFactory(input,
-				new DBDevAdjacencyFactory(dbUtil)).build().getGraph())));
+		// DeveloperNetwork dn = new DeveloperNetwork(new SVNXMLDeveloperFactory(input,
+		// new DBDevAdjacencyFactory(dbUtil)).build().getGraph());
+		DeveloperNetwork dn = new DBDevAdjacencyFactory(dbUtil).build();
+		content.add(new DeveloperNetworkVisualize(dn));
 		frame.pack();
 		frame.setVisible(true);
 	}

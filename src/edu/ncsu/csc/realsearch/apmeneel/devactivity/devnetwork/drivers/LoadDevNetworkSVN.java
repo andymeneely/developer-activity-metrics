@@ -15,7 +15,8 @@ public class LoadDevNetworkSVN {
 		Properties props = new Properties(System.getProperties());
 		props.load(new FileReader(new File("devactivity.properties")));
 		DBUtil dbUtil = new DBUtil(props);
-		new SVNXMLDeveloperFactory(input, new DBDevAdjacencyFactory(dbUtil)).build();
+//		new SVNXMLDeveloperFactory(input, new DBDevAdjacencyFactory(dbUtil)).build();
+		new DBDevAdjacencyFactory(dbUtil).build();
 		System.out.println("Operation completed");
 	}
 }

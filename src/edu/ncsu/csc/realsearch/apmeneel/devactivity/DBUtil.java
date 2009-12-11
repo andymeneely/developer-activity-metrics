@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +61,6 @@ public class DBUtil {
 			ps.close();
 		}
 		conn.close();
-
 	}
 
 	public void executeSQLFile(String filepath) throws FileNotFoundException, SQLException, IOException {
@@ -89,5 +89,36 @@ public class DBUtil {
 		stmt.setLocalInfileInputStream(new FileInputStream(file));
 		stmt.execute("LOAD DATA LOCAL INFILE '' " + "INTO TABLE " + table
 				+ " FIELDS ENCLOSED BY '\"' IGNORE 1 LINES");
+	}
+
+	public static void closeConnection(Connection conn, Statement... s) throws SQLException {
+		for (Statement stmt : s) {
+			stmt.close();
+		}
+		conn.close();
+	}
+
+	public static void closeConnection(Connection conn, ResultSet rs, Statement... s) throws SQLException {
+		rs.close();
+		for (Statement stmt : s) {
+			stmt.close();
+		}
+		conn.close();
+	}
+
+	public static void closeConnection(Connection conn, ResultSet rs, PreparedStatement... s)
+			throws SQLException {
+		rs.close();
+		for (PreparedStatement stmt : s) {
+			stmt.close();
+		}
+		conn.close();
+	}
+
+	public static void closeConnection(Connection conn, PreparedStatement... s) throws SQLException {
+		for (PreparedStatement stmt : s) {
+			stmt.close();
+		}
+		conn.close();
 	}
 }

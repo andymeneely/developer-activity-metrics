@@ -2,6 +2,7 @@ package edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.factory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Arrays;
 
 import com.mysql.jdbc.Connection;
@@ -33,11 +34,14 @@ public class DBDevAdjacencyFactory implements IDeveloperNetworkFactory {
 	}
 
 	private void addVertices(Graph<Developer, FileSet> graph, Connection conn) throws SQLException {
-		ResultSet rs = conn.createStatement().executeQuery("SELECT DISTINCT authorname FROM repolog");
+		Statement stmt = conn.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT DISTINCT authorname FROM repolog");
 		while (rs.next()) {
 			Developer dev = new Developer(rs.getString("authorname").toLowerCase());
 			graph.addVertex(dev);
 		}
+		rs.close();
+		stmt.close();
 	}
 
 	private void addEdges(Graph<Developer, FileSet> graph, Connection conn) throws SQLException {

@@ -2,7 +2,7 @@ package edu.ncsu.csc.realsearch.apmeneel.devactivity.test;
 
 import static org.junit.Assert.assertEquals;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.GregorianCalendar;
 
 import org.junit.Test;
@@ -14,7 +14,7 @@ public class SVNDateParseTest {
 	@Test
 	public void actualDate() throws Exception {
 		String dateStr = "2009-08-25T18:06:59.123456Z";
-		Date date = LoadSVNtoDB.parseDate(dateStr);
+		Timestamp date = LoadSVNtoDB.parseDate(dateStr);
 		GregorianCalendar greg = new GregorianCalendar();
 		greg.setTimeInMillis(date.getTime());
 		assertEquals(2009, greg.get(GregorianCalendar.YEAR));
@@ -29,7 +29,7 @@ public class SVNDateParseTest {
 	@Test
 	public void anotherActualDate() throws Exception {
 		String dateStr = "2008-09-11T19:11:20.483514Z";
-		Date date = LoadSVNtoDB.parseDate(dateStr);
+		Timestamp date = LoadSVNtoDB.parseDate(dateStr);
 		GregorianCalendar greg = new GregorianCalendar();
 		greg.setTimeInMillis(date.getTime());
 		assertEquals(2008, greg.get(GregorianCalendar.YEAR));
