@@ -1,9 +1,12 @@
 package edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileSet {
+public class FileSet implements Serializable {
+
+	private static final long serialVersionUID = 8017327006475847353L;
 	private List<String> files = new ArrayList<String>();
 
 	// TODO need to have timestamps as well

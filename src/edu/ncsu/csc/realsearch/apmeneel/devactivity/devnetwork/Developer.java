@@ -1,6 +1,10 @@
 package edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork;
 
-public class Developer {
+import java.io.Serializable;
+
+public class Developer implements Serializable {
+
+	private static final long serialVersionUID = -1805942134852848557L;
 	private String name;
 
 	public String getName() {
