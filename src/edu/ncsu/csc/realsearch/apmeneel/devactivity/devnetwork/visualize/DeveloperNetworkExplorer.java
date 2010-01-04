@@ -58,7 +58,7 @@ import edu.uci.ics.jung.visualization.transform.shape.HyperbolicShapeTransformer
 import edu.uci.ics.jung.visualization.transform.shape.ViewLensSupport;
 import edu.uci.ics.jung.visualization.util.Animator;
 
-public class DeveloperNetworkVisualize extends JApplet {
+public class DeveloperNetworkExplorer extends JApplet {
 
 	private static final long serialVersionUID = 4772441438424199758L;
 
@@ -79,7 +79,7 @@ public class DeveloperNetworkVisualize extends JApplet {
 		return layouts.toArray(new Class[0]);
 	}
 
-	public DeveloperNetworkVisualize(DeveloperNetwork dn) {
+	public DeveloperNetworkExplorer(DeveloperNetwork dn) {
 		graph = dn.getGraph();
 
 		// layout = new KKLayout<Developer, FileSet>(graph);
@@ -220,7 +220,7 @@ public class DeveloperNetworkVisualize extends JApplet {
 		// DeveloperNetwork dn = new DeveloperNetwork(new SVNXMLDeveloperFactory(input,
 		// new DBDevAdjacencyFactory(dbUtil)).build().getGraph());
 		DeveloperNetwork dn = new DBDevAdjacencyFactory(dbUtil).build();
-		content.add(new DeveloperNetworkVisualize(dn));
+		content.add(new DeveloperNetworkExplorer(dn));
 		frame.pack();
 		frame.setVisible(true);
 	}
