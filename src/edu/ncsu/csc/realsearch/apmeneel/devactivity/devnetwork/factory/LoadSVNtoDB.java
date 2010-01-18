@@ -26,9 +26,9 @@ import com.mysql.jdbc.Connection;
 
 import edu.ncsu.csc.realsearch.apmeneel.devactivity.DBUtil;
 
-public class LoadSVNtoDB{
+public class LoadSVNtoDB {
 	private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LoadSVNtoDB.class);
-	
+
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
 	private File input;
@@ -69,6 +69,10 @@ public class LoadSVNtoDB{
 				svnLogInsert.setString(1, revision);
 				svnLogInsert.setString(2, author);
 				svnLogInsert.setTimestamp(3, date);
+				if (message.length() > 5000) {
+					log.warn("Message truncated for r" + revision + ", " + author + "[" + date + "]");
+					message = message.substring(0, 5000);
+				}
 				svnLogInsert.setString(4, message);
 				svnLogInsert.addBatch();
 			} else if ("path".equals(n.getNodeName())) {
