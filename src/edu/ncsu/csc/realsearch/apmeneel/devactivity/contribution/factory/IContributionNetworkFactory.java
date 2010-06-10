@@ -4,6 +4,6 @@ import edu.ncsu.csc.realsearch.apmeneel.devactivity.contribution.ContributionNet
 
 public interface IContributionNetworkFactory {
 
-	public ContributionNetwork build();
+	public ContributionNetwork build() throws Exception;
 	
 }
