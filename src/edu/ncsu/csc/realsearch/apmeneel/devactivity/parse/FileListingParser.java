@@ -18,13 +18,12 @@ public class FileListingParser {
 		stmt.setLocalInfileInputStream(new FileInputStream(props.getProperty("history.datadir")
 				+ "/allfiles.txt"));
 		stmt.execute("LOAD DATA LOCAL INFILE '' "
-				+ "INTO TABLE SourceCode LINES TERMINATED BY '\r\n' (filepath)");
-		if ("true".equals(props.getProperty("wiresharkhistory.sourceCodeOnly"))) {
+				+ "INTO TABLE SourceCode LINES TERMINATED BY '\n' (filepath)");
+		if ("true".equals(props.getProperty("history.sourceCodeOnly"))) {
 			log.debug("\tDeleting non-source code files...");
 			int affected = stmt.executeUpdate("DELETE FROM sourcecode WHERE "
 					+ "filepath NOT LIKE '%.c' AND filepath NOT LIKE '%.h'");
-			if (affected != 901)
-				throw new IllegalStateException("DELETED " + affected + " non .c and non .h instead of 2688");
+			log.debug("\tDeleted " + affected + " non-source files...");
 		} else {
 			log.debug("\tKeeping all files, source code or not...");
 		}
