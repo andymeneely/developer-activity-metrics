@@ -35,8 +35,8 @@ public class DeveloperNetworkAnalysis {
 		DeveloperNetwork dn = new DBDevAdjacencyFactory(dbUtil).build();
 		log.debug("Running centrality calculations...");
 		loadBetweenness(dn);
-		log.debug("Running all pairs distance...");
-		loadDistances(dn, new ComplementFileSetSizeDistance(1787));
+//		log.debug("Running all pairs distance...");
+//		loadDistances(dn, new ComplementFileSetSizeDistance(1787));
 		// loadDistances(dn, new InverseFileSetSizeDistance());
 		log.debug("Calculating network results...");
 		runNetworkAnalysis(dn);
