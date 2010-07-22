@@ -21,6 +21,24 @@ public class IterateOverDates {
 		return list;
 	}
 
+	public static List<DateRange> getWindows(Date from, Date to, long windowWidthMS, long windowShiftMS,
+			boolean keepSmallWindows) {
+		List<DateRange> list = new ArrayList<DateRange>();
+		for (long start = from.getTime(); start < to.getTime(); start += windowShiftMS) {
+			long nextTo = start + windowWidthMS;
+			boolean goodOne = true;
+			if (nextTo > to.getTime()) {
+				nextTo = to.getTime();
+				goodOne = keepSmallWindows;
+			}
+			if (goodOne)
+				list.add(r(start, nextTo));
+		}
+		if (list.size() > 0)
+			list.get(list.size() - 1).to = to; // round off to last date
+		return list;
+	}
+
 	private static DateRange r(Date from, Date to) {
 		return new DateRange(from, to);
 	}
