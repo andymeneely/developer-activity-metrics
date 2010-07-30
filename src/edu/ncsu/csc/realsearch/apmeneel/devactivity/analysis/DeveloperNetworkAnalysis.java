@@ -25,6 +25,7 @@ public class DeveloperNetworkAnalysis {
 	private static org.apache.log4j.Logger log = org.apache.log4j.Logger
 			.getLogger(DeveloperNetworkAnalysis.class);
 	private final DBUtil dbUtil;
+	private DeveloperNetwork dn;
 
 	public DeveloperNetworkAnalysis(DBUtil dbUtil) {
 		this.dbUtil = dbUtil;
@@ -32,7 +33,7 @@ public class DeveloperNetworkAnalysis {
 
 	public void run() throws Exception {
 		log.debug("Building developer network...");
-		DeveloperNetwork dn = new DBDevAdjacencyFactory(dbUtil).build();
+		dn = new DBDevAdjacencyFactory(dbUtil).build();
 		log.debug("Running centrality calculations...");
 		loadBetweenness(dn);
 //		log.debug("Running all pairs distance...");
@@ -119,5 +120,9 @@ public class DeveloperNetworkAnalysis {
 		double diameter = DistanceStatistics.diameter(graph, new UnweightedShortestPath<Developer, FileSet>(
 				graph), true);
 		log.info("\tDiameter (non-inf):   \t" + diameter);
+	}
+	
+	public DeveloperNetwork getDeveloperNetwork() {
+		return dn;
 	}
 }
