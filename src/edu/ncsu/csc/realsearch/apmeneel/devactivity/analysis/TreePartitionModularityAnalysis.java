@@ -10,13 +10,13 @@ import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.DeveloperNetwork;
 import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.FileSet;
 import edu.uci.ics.jung.graph.Tree;
 
-public class ModularityAnalysis {
-	private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(ModularityAnalysis.class);
+public class TreePartitionModularityAnalysis {
+	private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(TreePartitionModularityAnalysis.class);
 	private final DeveloperNetwork dn;
 	private final Properties props;
 	private final Tree<Developer, String> mgmtTree;
 
-	public ModularityAnalysis(DeveloperNetwork dn, Tree<Developer, String> mgmtTree, Properties props) {
+	public TreePartitionModularityAnalysis(DeveloperNetwork dn, Tree<Developer, String> mgmtTree, Properties props) {
 		this.dn = dn;
 		this.mgmtTree = mgmtTree;
 		this.props = props;
