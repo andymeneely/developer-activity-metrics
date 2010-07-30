@@ -1,5 +1,6 @@
 package edu.ncsu.csc.realsearch.apmeneel.devactivity.analysis;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
@@ -26,13 +27,13 @@ public class PartitionsFromTree<V, E> {
 				V parent = v;
 				// traverse up the tree
 				for (int i = 0; i < depth - distanceFromRoot; i++)
-					parent = tree.getParent(v);
+					parent = tree.getParent(parent);
 				// Add this vertex - initializing that partition if necessary
 				Set<V> partition = partitionsMap.get(parent);
 				if (partition == null)
 					partition = addPartition(partitionsMap, parent);
 				partition.add(v);
-			} // else if(depth < distanceFromRoot) then do nothing, we don't care
+			} // else if(depth < distanceFromRoot) then do 
 		}
 		// Dump the map into HashMaps
 		Set<Set<V>> partitions = new HashSet<Set<V>>(partitionsMap.size());
