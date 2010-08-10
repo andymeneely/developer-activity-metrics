@@ -36,8 +36,8 @@ public class DeveloperNetworkAnalysis {
 		dn = new DBDevAdjacencyFactory(dbUtil).build();
 		log.debug("Running centrality calculations...");
 		loadBetweenness(dn);
-		log.debug("Running all pairs distance...");
-		loadDistances(dn, new ComplementFileSetSizeDistance(1039));
+		// log.debug("Running all pairs distance...");
+		// loadDistances(dn, new ComplementFileSetSizeDistance(1039));
 		// loadDistances(dn, new InverseFileSetSizeDistance());
 		log.debug("Calculating network results...");
 		runNetworkAnalysis(dn);
@@ -51,10 +51,13 @@ public class DeveloperNetworkAnalysis {
 		Connection conn = dbUtil.getConnection();
 		PreparedStatement ps = conn
 				.prepareStatement("INSERT INTO DevNetworkAnalysis(author, degree, betweenness) VALUES (?,?,?)");
+		int e = dn.getGraph().getVertexCount();
+		double normalizeBy = (e - 1) * (e - 2) / 2.0;
+
 		for (Developer dev : devs) {
 			ps.setString(1, dev.getName());
 			ps.setDouble(2, dn.getGraph().degree(dev));
-			ps.setDouble(3, bc.getVertexScore(dev));
+			ps.setDouble(3, bc.getVertexScore(dev) / normalizeBy);
 			ps.addBatch();
 		}
 		log.debug("\tExecuting batch insert ...");
