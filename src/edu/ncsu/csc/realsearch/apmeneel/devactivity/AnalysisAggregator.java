@@ -10,12 +10,12 @@ public class AnalysisAggregator {
 	public static void logResult(String experimentDescription, String metricDescription, double result, Connection conn)
 			throws SQLException {
 		log.info(experimentDescription + "\t" + metricDescription + ":\t" + result);
-//		PreparedStatement ps = conn
-//				.prepareStatement("INSERT INTO AnalysisResults(ExperimentDescription, MetricName, MetricValue) VALUES(?,?,?)");
-//		ps.setString(1, experimentDescription);
-//		ps.setString(2, metricDescription);
-//		ps.setDouble(3, result);
-//		ps.executeUpdate();
-//		ps.close();
+		PreparedStatement ps = conn
+				.prepareStatement("INSERT INTO AnalysisResults(ExperimentDescription, MetricName, MetricValue) VALUES(?,?,?)");
+		ps.setString(1, experimentDescription);
+		ps.setString(2, metricDescription);
+		ps.setDouble(3, result);
+		ps.executeUpdate();
+		ps.close();
 	}
 }
