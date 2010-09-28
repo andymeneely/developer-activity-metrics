@@ -4,13 +4,14 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.collections15.Transformer;
 
 import com.mysql.jdbc.Connection;
 
+import edu.ncsu.csc.realsearch.apmeneel.devactivity.AnalysisAggregator;
 import edu.ncsu.csc.realsearch.apmeneel.devactivity.DBUtil;
-import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.ComplementFileSetSizeDistance;
 import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.Developer;
 import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.DeveloperNetwork;
 import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.FileSet;
@@ -26,9 +27,11 @@ public class DeveloperNetworkAnalysis {
 	private final DBUtil dbUtil;
 	private DeveloperNetwork dn;
 	private BetweennessCentrality<Developer, FileSet> bc;
+	private String experiment;
 
-	public DeveloperNetworkAnalysis(DBUtil dbUtil) {
+	public DeveloperNetworkAnalysis(DBUtil dbUtil, Properties props) {
 		this.dbUtil = dbUtil;
+		this.experiment = props.getProperty("history.experiment");
 	}
 
 	public void run() throws Exception {
@@ -112,19 +115,21 @@ public class DeveloperNetworkAnalysis {
 		ps.executeBatch();
 	}
 
-	private void runNetworkAnalysis(DeveloperNetwork dn) {
+	private void runNetworkAnalysis(DeveloperNetwork dn) throws SQLException {
+		Connection conn = dbUtil.getConnection();
 		Graph<Developer, FileSet> graph = dn.getGraph();
 		int n = graph.getVertexCount();
-		log.info("\tNumber of developers:\t" + n);
+		AnalysisAggregator.logResult(experiment, "Number of developers", n, conn);
 		int e = graph.getEdgeCount();
-		log.info("\tNumber of edges:\t" + e);
+		AnalysisAggregator.logResult(experiment, "Number of edges", e, conn);
 		double density = (n - 1) * (n - 2) / 2;
 		density = ((double) e) / density;
-		log.info("\tDensity:      \t" + density);
-		// double diameter = DistanceStatistics.diameter(graph, new
-		// UnweightedShortestPath<Developer, FileSet>(graph),
-		// true);
-		// log.info("\tDiameter (non-inf):   \t" + diameter);
+		AnalysisAggregator.logResult(experiment, "Density:      \t", density, conn);
+		 double diameter = DistanceStatistics.diameter(graph, new
+		 UnweightedShortestPath<Developer, FileSet>(graph),
+		 true);
+		 AnalysisAggregator.logResult(experiment, "Diameter (non-inf)", diameter,conn);
+		DBUtil.closeConnection(conn, (PreparedStatement) null);
 	}
 
 	public DeveloperNetwork getDeveloperNetwork() {
