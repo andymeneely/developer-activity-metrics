@@ -87,8 +87,7 @@ public class DBUtil {
 
 	public void loadLocalFile(Statement stmt, String file, String table) throws Exception {
 		stmt.setLocalInfileInputStream(new FileInputStream(file));
-		stmt.execute("LOAD DATA LOCAL INFILE '' " + "INTO TABLE " + table
-				+ " FIELDS ENCLOSED BY '\"' IGNORE 1 LINES");
+		stmt.execute("LOAD DATA LOCAL INFILE '' " + "INTO TABLE " + table + " FIELDS ENCLOSED BY '\"' IGNORE 1 LINES");
 	}
 
 	public static void closeConnection(Connection conn, Statement... s) throws SQLException {
@@ -106,8 +105,7 @@ public class DBUtil {
 		conn.close();
 	}
 
-	public static void closeConnection(Connection conn, ResultSet rs, PreparedStatement... s)
-			throws SQLException {
+	public static void closeConnection(Connection conn, ResultSet rs, PreparedStatement... s) throws SQLException {
 		rs.close();
 		for (PreparedStatement stmt : s) {
 			stmt.close();
@@ -117,7 +115,8 @@ public class DBUtil {
 
 	public static void closeConnection(Connection conn, PreparedStatement... s) throws SQLException {
 		for (PreparedStatement stmt : s) {
-			stmt.close();
+			if (stmt != null)
+				stmt.close();
 		}
 		conn.close();
 	}
