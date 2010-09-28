@@ -21,7 +21,7 @@ public class DeveloperNetworkCache {
 		map.put(key, dn);
 	}
 
-	public DeveloperNetwork get(String key, DeveloperNetwork dn) {
+	public DeveloperNetwork get(String key) {
 		return map.get(key);
 	}
 

@@ -14,6 +14,7 @@ import edu.ncsu.csc.realsearch.apmeneel.devactivity.AnalysisAggregator;
 import edu.ncsu.csc.realsearch.apmeneel.devactivity.DBUtil;
 import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.Developer;
 import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.DeveloperNetwork;
+import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.DeveloperNetworkCache;
 import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.FileSet;
 import edu.ncsu.csc.realsearch.apmeneel.devactivity.devnetwork.factory.DBDevAdjacencyFactory;
 import edu.uci.ics.jung.algorithms.scoring.BetweennessCentrality;
@@ -44,6 +45,8 @@ public class DeveloperNetworkAnalysis {
 		// loadDistances(dn, new InverseFileSetSizeDistance());
 		log.debug("Calculating network results...");
 		runNetworkAnalysis(dn);
+		log.debug("Calculating network turnover...");
+		runNetworkTurnover(dn);
 	}
 
 	private void loadBetweenness(DeveloperNetwork dn) throws SQLException {
@@ -125,11 +128,27 @@ public class DeveloperNetworkAnalysis {
 		double density = (n - 1) * (n - 2) / 2;
 		density = ((double) e) / density;
 		AnalysisAggregator.logResult(experiment, "Density:      \t", density, conn);
-		 double diameter = DistanceStatistics.diameter(graph, new
-		 UnweightedShortestPath<Developer, FileSet>(graph),
-		 true);
-		 AnalysisAggregator.logResult(experiment, "Diameter (non-inf)", diameter,conn);
+		double diameter = DistanceStatistics.diameter(graph, new UnweightedShortestPath<Developer, FileSet>(graph),
+				true);
+		AnalysisAggregator.logResult(experiment, "Diameter (non-inf)", diameter, conn);
 		DBUtil.closeConnection(conn, (PreparedStatement) null);
+	}
+
+	private void runNetworkTurnover(DeveloperNetwork dn) throws SQLException {
+		Connection conn = dbUtil.getConnection();
+		DeveloperNetwork previous = DeveloperNetworkCache.getInstance().get("previous");
+		if (previous != null) {
+			GraphDiff<Developer, FileSet> graphDiff = new GraphDiff<Developer, FileSet>(previous.getGraph(),
+					dn.getGraph());
+			AnalysisAggregator.logResult(experiment, "New Developers", graphDiff.getNewVertices().size(), conn);
+			AnalysisAggregator.logResult(experiment, "Dropped Developers", graphDiff.getDroppedVertices().size(),
+					conn);
+			AnalysisAggregator.logResult(experiment, "Unchanged Developers", graphDiff.getUnchangedVertices().size(),
+					conn);
+		} else
+			log.debug("No previous developer network - no turnover analysis for experiment " + experiment);
+		DBUtil.closeConnection(conn, (PreparedStatement) null);
+		DeveloperNetworkCache.getInstance().put("previous", dn);
 	}
 
 	public DeveloperNetwork getDeveloperNetwork() {
