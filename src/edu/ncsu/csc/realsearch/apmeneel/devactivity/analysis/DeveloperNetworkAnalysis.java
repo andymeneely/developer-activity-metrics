@@ -47,6 +47,8 @@ public class DeveloperNetworkAnalysis {
 		runNetworkAnalysis(dn);
 		log.debug("Calculating network turnover...");
 		runNetworkTurnover(dn);
+		log.debug("Robustness simulations...");
+		runRobustnessSimulations(dn);
 	}
 
 	private void loadBetweenness(DeveloperNetwork dn) throws SQLException {
@@ -141,14 +143,20 @@ public class DeveloperNetworkAnalysis {
 			GraphDiff<Developer, FileSet> graphDiff = new GraphDiff<Developer, FileSet>(previous.getGraph(),
 					dn.getGraph());
 			AnalysisAggregator.logResult(experiment, "New Developers", graphDiff.getNewVertices().size(), conn);
-			AnalysisAggregator.logResult(experiment, "Dropped Developers", graphDiff.getDroppedVertices().size(),
-					conn);
+			AnalysisAggregator.logResult(experiment, "Dropped Developers", graphDiff.getDroppedVertices().size(), conn);
 			AnalysisAggregator.logResult(experiment, "Unchanged Developers", graphDiff.getUnchangedVertices().size(),
 					conn);
 		} else
 			log.debug("No previous developer network - no turnover analysis for experiment " + experiment);
 		DBUtil.closeConnection(conn, (PreparedStatement) null);
 		DeveloperNetworkCache.getInstance().put("previous", dn);
+	}
+
+	private void runRobustnessSimulations(DeveloperNetwork dn) throws SQLException {
+		Connection conn = dbUtil.getConnection();
+		AnalysisAggregator.logResult(experiment, "Cut Developers", new CutVertices<Developer, FileSet>(dn.getGraph())
+				.getCutVertices().size(), conn);
+		DBUtil.closeConnection(conn, (PreparedStatement) null);
 	}
 
 	public DeveloperNetwork getDeveloperNetwork() {
