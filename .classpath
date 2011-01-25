@@ -8,7 +8,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/EasyMock"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/EasyMock Class Extensions"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Log4J 1.2"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/log4j"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Weka3-6"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
