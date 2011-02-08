@@ -14,7 +14,10 @@ public class AnalysisAggregator {
 				.prepareStatement("INSERT INTO AnalysisResults(ExperimentDescription, MetricName, MetricValue) VALUES(?,?,?)");
 		ps.setString(1, experimentDescription);
 		ps.setString(2, metricDescription);
-		ps.setDouble(3, result);
+		if (Double.isNaN(result))
+			ps.setDouble(3, 0.0);
+		else
+			ps.setDouble(3, result);
 		ps.executeUpdate();
 		ps.close();
 	}
