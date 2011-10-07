@@ -25,7 +25,7 @@ public class DBContributionFactory implements IContributionNetworkFactory {
 		this.dbUtil = dbUtil;
 	}
 
-	@Override
+
 	public ContributionNetwork build() throws Exception {
 		dbUtil.executeSQLFile("sql/contribution.sql");
 		Graph<ContributionNode, ContributionCommit> graph = new UndirectedSparseGraph<ContributionNode, ContributionCommit>();

@@ -17,7 +17,6 @@ public class SVNXMLDeveloperFactory implements IDeveloperNetworkFactory {
 		this.dbUtil = factory.getDbUtil();
 	}
 
-	@Override
 	public DeveloperNetwork build() throws Exception {
 		System.out.println("Parsing SVN XML log file...");
 		new LoadSVNtoDB(dbUtil, input).run();

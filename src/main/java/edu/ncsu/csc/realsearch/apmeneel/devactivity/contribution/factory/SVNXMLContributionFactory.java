@@ -4,7 +4,6 @@ import edu.ncsu.csc.realsearch.apmeneel.devactivity.contribution.ContributionNet
 
 public class SVNXMLContributionFactory implements IContributionNetworkFactory{
 
-	@Override
 	public ContributionNetwork build() {
 		throw new IllegalStateException("unimplemented!");
 	}

@@ -10,7 +10,7 @@ import org.apache.commons.collections15.Transformer;
  * 
  */
 public class InverseFileSetSizeDistance implements Transformer<FileSet, Number> {
-	@Override
+	
 	public Number transform(FileSet fileSet) {
 		if (fileSet.getFiles().isEmpty()) {
 			throw new IllegalArgumentException(

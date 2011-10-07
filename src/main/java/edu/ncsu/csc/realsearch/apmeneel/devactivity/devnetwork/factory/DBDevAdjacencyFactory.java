@@ -22,7 +22,6 @@ public class DBDevAdjacencyFactory implements IDeveloperNetworkFactory {
 		this.dbUtil = dbUtil;
 	}
 
-	@Override
 	public DeveloperNetwork build() throws Exception {
 		dbUtil.executeSQLFile("sql/devAdjacency.sql");
 		Graph<Developer, FileSet> graph = new UndirectedSparseGraph<Developer, FileSet>();

@@ -25,7 +25,6 @@ public class ComplementFileSetSizeDistance implements Transformer<FileSet, Numbe
 		this.numFilesInSystem = numFilesInSystem;
 	}
 
-	@Override
 	public Number transform(FileSet fileSet) {
 		if (fileSet.getFiles().isEmpty()) {
 			throw new IllegalArgumentException(
