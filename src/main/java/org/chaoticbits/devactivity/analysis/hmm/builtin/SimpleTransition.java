@@ -1,24 +1,29 @@
 package org.chaoticbits.devactivity.analysis.hmm.builtin;
 
+import org.chaoticbits.devactivity.analysis.hmm.Fraction;
 import org.chaoticbits.devactivity.analysis.hmm.IHMMAlphabet;
 import org.chaoticbits.devactivity.analysis.hmm.IHMMTransition;
 
 public class SimpleTransition<T extends IHMMAlphabet<T>> implements IHMMTransition<T> {
 
-	private final double probability;
 	private final String name;
+	private Fraction probability;
 
-	public SimpleTransition(double probability) {
+	public SimpleTransition(Fraction probability) {
 		this(null, probability);
 	}
 
-	public SimpleTransition(String name, double probability) {
+	public SimpleTransition(String name, Fraction probability) {
 		this.name = name;
 		this.probability = probability;
 	}
 
-	public double getProbability() {
+	public Fraction getProbability() {
 		return probability;
+	}
+
+	public void setProbability(Fraction prob) {
+		this.probability = prob;
 	}
 
 	public String name() {
@@ -48,8 +53,6 @@ public class SimpleTransition<T extends IHMMAlphabet<T>> implements IHMMTransiti
 			if (other.name != null)
 				return false;
 		} else if (!name.equals(other.name))
-			return false;
-		if (Double.doubleToLongBits(probability) != Double.doubleToLongBits(other.probability))
 			return false;
 		return true;
 	}

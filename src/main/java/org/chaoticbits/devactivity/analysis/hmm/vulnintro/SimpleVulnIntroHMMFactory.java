@@ -3,7 +3,9 @@ package org.chaoticbits.devactivity.analysis.hmm.vulnintro;
 import static org.chaoticbits.devactivity.analysis.hmm.vulnintro.VulnerabilityState.NEUTRAL;
 import static org.chaoticbits.devactivity.analysis.hmm.vulnintro.VulnerabilityState.VULNERABLE;
 
-import org.chaoticbits.devactivity.analysis.hmm.IHMMAlphabet;
+import java.util.Collection;
+
+import org.chaoticbits.devactivity.analysis.hmm.Fraction;
 import org.chaoticbits.devactivity.analysis.hmm.IHMMFactory;
 import org.chaoticbits.devactivity.analysis.hmm.IHMMState;
 import org.chaoticbits.devactivity.analysis.hmm.IHMMTransition;
@@ -15,7 +17,7 @@ import edu.uci.ics.jung.graph.DirectedSparseGraph;
 public class SimpleVulnIntroHMMFactory implements IHMMFactory<ChurnSignal> {
 
 	private final int maxNumDevs;
-	private DirectedGraph<IHMMState<ChurnSignal>, IHMMTransition<ChurnSignal>> graph;
+	private DirectedSparseGraph<IHMMState<ChurnSignal>, IHMMTransition<ChurnSignal>> graph;
 
 	public SimpleVulnIntroHMMFactory(int maxNumDevs) {
 		this.maxNumDevs = maxNumDevs;
@@ -30,7 +32,12 @@ public class SimpleVulnIntroHMMFactory implements IHMMFactory<ChurnSignal> {
 		if (graph != null)
 			return;
 		graph = new DirectedSparseGraph<IHMMState<ChurnSignal>, IHMMTransition<ChurnSignal>>();
+		addCrossEdges();
+		selfLoops();
+		relaxTransitionProbs();
+	}
 
+	private void addCrossEdges() {
 		NumDevsState n_iminus1 = new NumDevsState(NEUTRAL, 1);
 		NumDevsState v_iminus1 = new NumDevsState(VULNERABLE, 1);
 		graph.addEdge(e("n1-v1"), n_iminus1, v_iminus1);
@@ -47,13 +54,28 @@ public class SimpleVulnIntroHMMFactory implements IHMMFactory<ChurnSignal> {
 			n_iminus1 = n_i;
 			v_iminus1 = v_i;
 		}
+	}
 
+	private void selfLoops() {
 		for (IHMMState<ChurnSignal> state : graph.getVertices()) {
 			graph.addEdge(e("self loop for " + state), state, state); // self loop
 		}
 	}
 
+	/**
+	 * Default transition probability is Laplace - 1/n where n=neighbors
+	 */
+	private void relaxTransitionProbs() {
+		for (IHMMState<ChurnSignal> state : graph.getVertices()) {
+			Collection<IHMMTransition<ChurnSignal>> edges = graph.getOutEdges(state);
+			int total = edges.size();
+			for (IHMMTransition<ChurnSignal> edge : edges) {
+				edge.setProbability(new Fraction(1, total));
+			}
+		}
+	}
+
 	private SimpleTransition<ChurnSignal> e(String name) {
-		return new SimpleTransition<ChurnSignal>(name, 0.25);
+		return new SimpleTransition<ChurnSignal>(name, new Fraction(1, 4));
 	}
 }
