@@ -8,7 +8,7 @@ import org.chaoticbits.devactivity.analysis.hmm.vulnintro.ChurnSignal;
 import org.chaoticbits.devactivity.analysis.hmm.vulnintro.ChurnSignalParser;
 import org.junit.Test;
 
-public class SignalParserTest {
+public class ChurnSignalParserTest {
 
 	@Test
 	public void readsSimple() throws Exception {
