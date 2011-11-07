@@ -9,6 +9,7 @@ import org.chaoticbits.devactivity.analysis.hmm.Fraction;
 import org.chaoticbits.devactivity.analysis.hmm.IHMMFactory;
 import org.chaoticbits.devactivity.analysis.hmm.IHMMState;
 import org.chaoticbits.devactivity.analysis.hmm.IHMMTransition;
+import org.chaoticbits.devactivity.analysis.hmm.builtin.SimpleStartState;
 import org.chaoticbits.devactivity.analysis.hmm.builtin.SimpleTransition;
 
 import edu.uci.ics.jung.graph.DirectedGraph;
@@ -18,6 +19,7 @@ public class SimpleVulnIntroHMMFactory implements IHMMFactory<ChurnSignal> {
 
 	private final int maxNumDevs;
 	private DirectedSparseGraph<IHMMState<ChurnSignal>, IHMMTransition<ChurnSignal>> graph;
+	private IHMMState<ChurnSignal> starting;
 
 	public SimpleVulnIntroHMMFactory(int maxNumDevs) {
 		this.maxNumDevs = maxNumDevs;
@@ -26,6 +28,11 @@ public class SimpleVulnIntroHMMFactory implements IHMMFactory<ChurnSignal> {
 	public DirectedGraph<IHMMState<ChurnSignal>, IHMMTransition<ChurnSignal>> getStateGraph() {
 		init();
 		return graph;
+	}
+
+	public IHMMState<ChurnSignal> getStarting() {
+		init();
+		return starting;
 	}
 
 	private void init() {
@@ -38,8 +45,11 @@ public class SimpleVulnIntroHMMFactory implements IHMMFactory<ChurnSignal> {
 	}
 
 	private void addCrossEdges() {
+		starting = new SimpleStartState<ChurnSignal>();
 		NumDevsState n_iminus1 = new NumDevsState(NEUTRAL, 1);
 		NumDevsState v_iminus1 = new NumDevsState(VULNERABLE, 1);
+		graph.addEdge(e("start-n1"), starting, n_iminus1);
+		graph.addEdge(e("start-v1"), starting, v_iminus1);
 		graph.addEdge(e("n1-v1"), n_iminus1, v_iminus1);
 		graph.addEdge(e("v1-n1"), v_iminus1, n_iminus1);
 		for (int i = 2; i <= maxNumDevs; i++) {
@@ -58,7 +68,8 @@ public class SimpleVulnIntroHMMFactory implements IHMMFactory<ChurnSignal> {
 
 	private void selfLoops() {
 		for (IHMMState<ChurnSignal> state : graph.getVertices()) {
-			graph.addEdge(e("self loop for " + state), state, state); // self loop
+			if (state != starting)
+				graph.addEdge(e("self loop for " + state), state, state); // self loop
 		}
 	}
 
@@ -78,4 +89,5 @@ public class SimpleVulnIntroHMMFactory implements IHMMFactory<ChurnSignal> {
 	private SimpleTransition<ChurnSignal> e(String name) {
 		return new SimpleTransition<ChurnSignal>(name, new Fraction(1, 4));
 	}
+
 }

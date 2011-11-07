@@ -36,6 +36,10 @@ public class NumDevsState implements IHMMState<ChurnSignal> {
 		return state;
 	}
 
+	public void incrementOccurrence(ChurnSignal signalLetter) {
+		emissionPDF.incrementOccurrence(signalLetter, 1);
+	}
+
 	@Override
 	public String toString() {
 		return name();

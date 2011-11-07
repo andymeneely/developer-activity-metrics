@@ -4,6 +4,6 @@ public interface IHMMTrainingSymbol<T extends IHMMAlphabet<T>> {
 
 	public IHMMState<T> state();
 
-	public IHMMAlphabet<T> symbol();
+	public T symbol();
 
 }

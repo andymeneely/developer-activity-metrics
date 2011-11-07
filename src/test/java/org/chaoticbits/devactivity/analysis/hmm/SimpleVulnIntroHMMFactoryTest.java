@@ -21,16 +21,16 @@ public class SimpleVulnIntroHMMFactoryTest {
 	@Test
 	public void sizeIsRight() throws Exception {
 		int maxNumDevs = 13;
-		VulnIntroHMM hmm = new VulnIntroHMM(new SimpleVulnIntroHMMFactory(maxNumDevs));
-		assertEquals("Two states for each count", maxNumDevs * 2, hmm.getStateGraph().getVertexCount());
-		assertEquals("4 for each state, 2 states for each count ", maxNumDevs * 4 * 2 - 4, hmm.getStateGraph()
+		IHiddenMarkovModel<ChurnSignal> hmm = new VulnIntroHMM(new SimpleVulnIntroHMMFactory(maxNumDevs));
+		assertEquals("Two states for each count + starting", maxNumDevs * 2 + 1, hmm.getStateGraph().getVertexCount());
+		assertEquals("4 for each state, 2 states for each count ", maxNumDevs * 4 * 2 - 4 + 2, hmm.getStateGraph()
 				.getEdgeCount());
 	}
 
 	@Test
 	public void topologyIsRight() throws Exception {
 		int maxNumDevs = 3;
-		VulnIntroHMM hmm = new VulnIntroHMM(new SimpleVulnIntroHMMFactory(maxNumDevs));
+		IHiddenMarkovModel<ChurnSignal> hmm = new VulnIntroHMM(new SimpleVulnIntroHMMFactory(maxNumDevs));
 		DirectedGraph<IHMMState<ChurnSignal>, IHMMTransition<ChurnSignal>> graph = hmm.getStateGraph();
 
 		NumDevsState n1 = new NumDevsState(NEUTRAL, 1);
@@ -40,7 +40,7 @@ public class SimpleVulnIntroHMMFactoryTest {
 		NumDevsState n3 = new NumDevsState(NEUTRAL, 3);
 		NumDevsState v3 = new NumDevsState(VULNERABLE, 3);
 
-		assertEquals("20 edges", 20, graph.getEdgeCount());
+		assertEquals("22 edges", 20 + 2, graph.getEdgeCount());
 
 		assertTrue(graph.containsVertex(n1));
 		assertTrue(graph.containsVertex(v1));
@@ -81,9 +81,11 @@ public class SimpleVulnIntroHMMFactoryTest {
 		Collection<IHMMState<ChurnSignal>> vertices = new VulnIntroHMM(new SimpleVulnIntroHMMFactory(2))
 				.getStateGraph().getVertices();
 		for (IHMMState<ChurnSignal> state : vertices) {
-			for (ChurnSignal signal : ChurnSignal.values()) {
-				assertEquals("basic emission probability for " + state + "@" + signal, 0.25,
-						state.emissionProbability(signal), 0.001);
+			if (state instanceof NumDevsState) {
+				for (ChurnSignal signal : ChurnSignal.values()) {
+					assertEquals("basic emission probability for " + state + "@" + signal, 0.25,
+							state.emissionProbability(signal), 0.001);
+				}
 			}
 		}
 	}
@@ -91,7 +93,7 @@ public class SimpleVulnIntroHMMFactoryTest {
 	@Test
 	public void relaxDefaults() throws Exception {
 		int maxNumDevs = 2;
-		VulnIntroHMM hmm = new VulnIntroHMM(new SimpleVulnIntroHMMFactory(maxNumDevs));
+		IHiddenMarkovModel<ChurnSignal> hmm = new VulnIntroHMM(new SimpleVulnIntroHMMFactory(maxNumDevs));
 		DirectedGraph<IHMMState<ChurnSignal>, IHMMTransition<ChurnSignal>> graph = hmm.getStateGraph();
 		NumDevsState n1 = new NumDevsState(VULNERABLE, 1);
 		NumDevsState n2 = new NumDevsState(VULNERABLE, 2);
@@ -129,7 +131,7 @@ public class SimpleVulnIntroHMMFactoryTest {
 		assertEquals("Default probability", 0.125, prob(hmm, n1, n2), 0.001);
 	}
 
-	private Double prob(VulnIntroHMM hmm, NumDevsState n1, NumDevsState v1) {
+	private Double prob(IHiddenMarkovModel<ChurnSignal> hmm, NumDevsState n1, NumDevsState v1) {
 		return hmm.getStateGraph().findEdge(n1, v1).getProbability().toDouble();
 	}
 }

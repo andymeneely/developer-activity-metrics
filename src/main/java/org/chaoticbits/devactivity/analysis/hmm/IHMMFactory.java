@@ -8,4 +8,6 @@ public interface IHMMFactory<T extends IHMMAlphabet<T>> {
 
 	public DirectedGraph<IHMMState<ChurnSignal>, IHMMTransition<ChurnSignal>> getStateGraph();
 
+	public IHMMState<T> getStarting();
+
 }

@@ -18,7 +18,7 @@ public class SimpleHMMTrainingSymbol<T extends IHMMAlphabet<T>> implements IHMMT
 		return state;
 	}
 
-	public IHMMAlphabet<T> symbol() {
+	public T symbol() {
 		return symbol;
 	}
 
