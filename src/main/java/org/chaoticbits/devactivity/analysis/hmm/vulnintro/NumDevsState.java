@@ -70,4 +70,7 @@ public class NumDevsState implements IHMMState<ChurnSignal> {
 		return true;
 	}
 
+	public boolean isStarting() {
+		return false;
+	}
 }

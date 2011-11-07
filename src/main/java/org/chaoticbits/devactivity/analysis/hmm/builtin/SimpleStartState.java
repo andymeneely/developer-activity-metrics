@@ -13,6 +13,10 @@ public class SimpleStartState<T extends IHMMAlphabet<T>> implements IHMMState<T>
 		return "start";
 	}
 
+	public boolean isStarting() {
+		return true;
+	}
+
 	public void incrementOccurrence(T signalLetter) {
 		throw new IllegalAccessError("Start state does not emit a symbol");
 	}

@@ -11,6 +11,8 @@ public interface IHiddenMarkovModel<T extends IHMMAlphabet<T>> {
 
 	public IHMMState<T> find(IHMMState<T> state);
 	
+	public int numNonSilentStates();
+	
 	public abstract void incrementTransition(IHMMState<T> from, IHMMState<T> to);
 	
 }

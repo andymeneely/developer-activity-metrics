@@ -1,6 +1,7 @@
 package org.chaoticbits.devactivity.analysis.hmm.vulnintro;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.chaoticbits.devactivity.analysis.hmm.Fraction;
 import org.chaoticbits.devactivity.analysis.hmm.IHMMFactory;
@@ -54,5 +55,18 @@ public class VulnIntroHMM implements IHiddenMarkovModel<ChurnSignal> {
 				return ihmmState;
 		}
 		throw new IllegalArgumentException("State not found: " + state);
+	}
+
+	public Double probabilityVulnerable(List<ChurnSignal> churnHistory) {
+		throw new IllegalStateException("unimplemented!");
+	}
+
+	public int numNonSilentStates() {
+		int count = 0;
+		Collection<IHMMState<ChurnSignal>> states = graph.getVertices();
+		for (IHMMState<ChurnSignal> state : states) {
+			count = count + (state.isStarting() ? 0 : 1);
+		}
+		return count;
 	}
 }

@@ -8,4 +8,6 @@ public interface IHMMState<T extends IHMMAlphabet<T>> {
 	
 	public String name();
 	
+	public boolean isStarting();
+	
 }
