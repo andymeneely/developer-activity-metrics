@@ -18,7 +18,7 @@ public class SimpleTransition<T extends IHMMAlphabet<T>> implements IHMMTransiti
 		this.probability = probability;
 	}
 
-	public Fraction getProbability() {
+	public Fraction getProb() {
 		return probability;
 	}
 

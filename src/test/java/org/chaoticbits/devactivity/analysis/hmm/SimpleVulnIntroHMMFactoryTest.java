@@ -133,6 +133,6 @@ public class SimpleVulnIntroHMMFactoryTest {
 	}
 
 	private Double prob(IHiddenMarkovModel<ChurnSignal> hmm, NumDevsState n1, NumDevsState v1) {
-		return hmm.getStateGraph().findEdge(n1, v1).getProbability().toDouble();
+		return hmm.getStateGraph().findEdge(n1, v1).getProb().toDouble();
 	}
 }

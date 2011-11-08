@@ -40,11 +40,11 @@ public class VulnIntroHMM implements IHiddenMarkovModel<ChurnSignal> {
 			throw new IllegalArgumentException("Transition " + s1 + " to " + s2 + " does not exist");
 		Collection<IHMMTransition<ChurnSignal>> edges = graph.getOutEdges(s1);
 		for (IHMMTransition<ChurnSignal> edge : edges) {
-			int denominator = edge.getProbability().getDenom();
+			int denominator = edge.getProb().getDenom();
 			if (incrEdge == edge) {
-				edge.setProbability(new Fraction(edge.getProbability().getNum() + by, denominator + by));
+				edge.setProbability(new Fraction(edge.getProb().getNum() + by, denominator + by));
 			} else {
-				edge.setProbability(new Fraction(edge.getProbability().getNum(), denominator + by));
+				edge.setProbability(new Fraction(edge.getProb().getNum(), denominator + by));
 			}
 		}
 	}

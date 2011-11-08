@@ -37,7 +37,7 @@ public class ForwardBackward<T extends IHMMAlphabet<T>> implements IHMMStateInfe
 		for (IHMMTransition<T> edge : outEdges) {
 			IHMMState<T> state = g.getDest(edge);
 			Double emitProb = state.emissionProbability(signal.get(0));
-			Double edgeProb = edge.getProbability().toDouble();
+			Double edgeProb = edge.getProb().toDouble();
 			p_state_seq.put(new StateSeqKey<T>(state, 0), log10(edgeProb) + log10(emitProb));
 		}
 	}
@@ -56,7 +56,7 @@ public class ForwardBackward<T extends IHMMAlphabet<T>> implements IHMMStateInfe
 
 					// p(state | signal_0..i) = sigma_incomingstatesS(
 					// p(S|signal_0..i-1)*inEdge*emissionProb )
-					Double inEdgeProb = inEdge.getProbability().toDouble();
+					Double inEdgeProb = inEdge.getProb().toDouble();
 					Double emitProb = state.emissionProbability(signal.get(i));
 					prob += pow(10d, previousProb) * inEdgeProb * emitProb;
 				}

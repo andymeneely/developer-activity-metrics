@@ -76,7 +76,7 @@ public class VulnIntroStateInferenceTest {
 				}
 			System.out.println("");
 			for (IHMMTransition<ChurnSignal> edge : hmm.getStateGraph().getOutEdges(state)) {
-				System.out.println("\t--" + edge.getProbability() + "-->" + hmm.getStateGraph().getDest(edge));
+				System.out.println("\t--" + edge.getProb() + "-->" + hmm.getStateGraph().getDest(edge));
 			}
 		}
 	}

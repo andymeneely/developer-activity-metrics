@@ -107,7 +107,7 @@ public class IncrementOccurrencesHMMTrainerTest {
 	}
 
 	private Double prob(IHiddenMarkovModel<ChurnSignal> hmm, NumDevsState s1, NumDevsState s2) {
-		return hmm.getStateGraph().findEdge(s1, s2).getProbability().toDouble();
+		return hmm.getStateGraph().findEdge(s1, s2).getProb().toDouble();
 	}
 
 }
