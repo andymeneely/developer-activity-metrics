@@ -11,7 +11,7 @@ import java.util.Collection;
 import org.chaoticbits.devactivity.analysis.hmm.builtin.IncrementOccurrencesHMMTrainer;
 import org.chaoticbits.devactivity.analysis.hmm.vulnintro.ChurnSignal;
 import org.chaoticbits.devactivity.analysis.hmm.vulnintro.NumDevsState;
-import org.chaoticbits.devactivity.analysis.hmm.vulnintro.SimpleVulnIntroHMMFactory;
+import org.chaoticbits.devactivity.analysis.hmm.vulnintro.NumDevsVulnIntroHMMFactory;
 import org.chaoticbits.devactivity.analysis.hmm.vulnintro.TrainingSetParser;
 import org.chaoticbits.devactivity.analysis.hmm.vulnintro.VulnIntroHMM;
 import org.junit.Before;
@@ -23,7 +23,7 @@ public class IncrementOccurrencesHMMTrainerTest {
 
 	@Before
 	public void setUp() throws FileNotFoundException {
-		hmm = new VulnIntroHMM(new SimpleVulnIntroHMMFactory(3));
+		hmm = new VulnIntroHMM(new NumDevsVulnIntroHMMFactory(3));
 	}
 
 	@Test

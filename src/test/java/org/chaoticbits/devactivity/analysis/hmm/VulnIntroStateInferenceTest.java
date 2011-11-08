@@ -16,7 +16,7 @@ import org.chaoticbits.devactivity.analysis.hmm.builtin.ForwardBackward;
 import org.chaoticbits.devactivity.analysis.hmm.builtin.IncrementOccurrencesHMMTrainer;
 import org.chaoticbits.devactivity.analysis.hmm.vulnintro.ChurnSignal;
 import org.chaoticbits.devactivity.analysis.hmm.vulnintro.NumDevsState;
-import org.chaoticbits.devactivity.analysis.hmm.vulnintro.SimpleVulnIntroHMMFactory;
+import org.chaoticbits.devactivity.analysis.hmm.vulnintro.NumDevsVulnIntroHMMFactory;
 import org.chaoticbits.devactivity.analysis.hmm.vulnintro.TrainingSetParser;
 import org.chaoticbits.devactivity.analysis.hmm.vulnintro.VulnIntroHMM;
 import org.junit.Test;
@@ -29,7 +29,7 @@ public class VulnIntroStateInferenceTest {
 		// n1 v1 n1 v1 v1
 		// SN BC BN BN SC
 		IHiddenMarkovModel<ChurnSignal> hmm = new IncrementOccurrencesHMMTrainer<ChurnSignal>().train(new VulnIntroHMM(
-				new SimpleVulnIntroHMMFactory(2)), new TrainingSetParser().parse(new File(
+				new NumDevsVulnIntroHMMFactory(2)), new TrainingSetParser().parse(new File(
 				"testdata/thrashingHMMTrainingTest.txt")));
 
 		Map<IHMMState<ChurnSignal>, Double> map = new ForwardBackward<ChurnSignal>().logProbInState(hmm,
@@ -52,7 +52,7 @@ public class VulnIntroStateInferenceTest {
 		// n1 v1 n1 v1 v1
 		// SN BC BN BN SC
 		IHiddenMarkovModel<ChurnSignal> hmm = new IncrementOccurrencesHMMTrainer<ChurnSignal>().train(new VulnIntroHMM(
-				new SimpleVulnIntroHMMFactory(2)), new TrainingSetParser().parse(new File(
+				new NumDevsVulnIntroHMMFactory(2)), new TrainingSetParser().parse(new File(
 				"testdata/thrashingHMMTrainingTest.txt")));
 
 		print(hmm);
@@ -91,7 +91,7 @@ public class VulnIntroStateInferenceTest {
 		// n1 v1 n2 v2 n3
 		// BN BC BN SC SN
 		IHiddenMarkovModel<ChurnSignal> hmm = new IncrementOccurrencesHMMTrainer<ChurnSignal>().train(new VulnIntroHMM(
-				new SimpleVulnIntroHMMFactory(3)), new TrainingSetParser().parse(new File(
+				new NumDevsVulnIntroHMMFactory(3)), new TrainingSetParser().parse(new File(
 				"testdata/thrashingHMMTrainingTest.txt")));
 
 		Map<IHMMState<ChurnSignal>, Double> map = new ForwardBackward<ChurnSignal>().logProbInState(hmm,
