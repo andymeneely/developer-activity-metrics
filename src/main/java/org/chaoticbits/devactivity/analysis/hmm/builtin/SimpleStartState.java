@@ -21,4 +21,9 @@ public class SimpleStartState<T extends IHMMAlphabet<T>> implements IHMMState<T>
 		throw new IllegalAccessError("Start state does not emit a symbol");
 	}
 
+	@Override
+	public String toString() {
+		return name();
+	}
+
 }

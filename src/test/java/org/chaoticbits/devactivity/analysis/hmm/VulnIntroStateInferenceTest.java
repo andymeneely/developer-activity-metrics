@@ -55,6 +55,8 @@ public class VulnIntroStateInferenceTest {
 				new SimpleVulnIntroHMMFactory(2)), new TrainingSetParser().parse(new File(
 				"testdata/thrashingHMMTrainingTest.txt")));
 
+		print(hmm);
+
 		Map<IHMMState<ChurnSignal>, Double> map = new ForwardBackward<ChurnSignal>().logProbInState(hmm,
 				Arrays.asList(SMALL_NEW_CODE, BIG_CHANGE));
 
@@ -62,6 +64,21 @@ public class VulnIntroStateInferenceTest {
 		Double p_v1 = pow(10d, map.get(hmm.find(new NumDevsState(VULNERABLE, 1))));
 
 		assertTrue("p(v1) > p(n1)", p_v1 > p_n1);
+		assertEquals("p(v1|SN BC)", 16d / 441d, p_v1, 0.001);
+	}
+
+	private void print(IHiddenMarkovModel<ChurnSignal> hmm) {
+		for (IHMMState<ChurnSignal> state : hmm.getStateGraph().getVertices()) {
+			System.out.println(state);
+			if (!state.isStarting())
+				for (ChurnSignal signal : ChurnSignal.values()) {
+					System.out.print(signal + ":" + state.emissionProbability(signal) + " ");
+				}
+			System.out.println("");
+			for (IHMMTransition<ChurnSignal> edge : hmm.getStateGraph().getOutEdges(state)) {
+				System.out.println("\t--" + edge.getProbability() + "-->" + hmm.getStateGraph().getDest(edge));
+			}
+		}
 	}
 
 	@Test

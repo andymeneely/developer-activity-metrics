@@ -1,6 +1,7 @@
 package org.chaoticbits.devactivity.analysis.hmm.builtin;
 
 import static java.lang.Math.log10;
+import static java.lang.Math.pow;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -55,9 +56,9 @@ public class ForwardBackward<T extends IHMMAlphabet<T>> implements IHMMStateInfe
 
 					// p(state | signal_0..i) = sigma_incomingstatesS(
 					// p(S|signal_0..i-1)*inEdge*emissionProb )
-					double logP = previousProb + inEdge.getProbability().toDouble()
-							+ state.emissionProbability(signal.get(i));
-					prob += Math.pow(10d, logP);
+					Double inEdgeProb = inEdge.getProbability().toDouble();
+					Double emitProb = state.emissionProbability(signal.get(i));
+					prob += pow(10d, previousProb) * inEdgeProb * emitProb;
 				}
 				p_state_seq.put(new StateSeqKey<T>(state, i), log10(prob));
 			}
