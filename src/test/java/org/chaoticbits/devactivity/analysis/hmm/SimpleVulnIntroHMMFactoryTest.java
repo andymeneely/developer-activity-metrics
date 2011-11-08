@@ -25,7 +25,7 @@ public class SimpleVulnIntroHMMFactoryTest {
 		assertEquals("Two states for each count + starting", maxNumDevs * 2 + 1, hmm.getStateGraph().getVertexCount());
 		assertEquals("4 for each state, 2 states for each count ", maxNumDevs * 4 * 2 - 4 + 2, hmm.getStateGraph()
 				.getEdgeCount());
-		assertEquals("counting non-starting right", maxNumDevs * 2, hmm.numNonSilentStates());
+		assertEquals("counting non-starting right", maxNumDevs * 2, hmm.getEmittingStateCount());
 	}
 
 	@Test

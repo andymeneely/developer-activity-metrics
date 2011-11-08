@@ -1,6 +1,7 @@
 package org.chaoticbits.devactivity.analysis.hmm.vulnintro;
 
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.chaoticbits.devactivity.analysis.hmm.Fraction;
@@ -61,12 +62,21 @@ public class VulnIntroHMM implements IHiddenMarkovModel<ChurnSignal> {
 		throw new IllegalStateException("unimplemented!");
 	}
 
-	public int numNonSilentStates() {
+	public int getEmittingStateCount() {
 		int count = 0;
 		Collection<IHMMState<ChurnSignal>> states = graph.getVertices();
 		for (IHMMState<ChurnSignal> state : states) {
 			count = count + (state.isStarting() ? 0 : 1);
 		}
 		return count;
+	}
+
+	public Collection<IHMMState<ChurnSignal>> emittingStates() {
+		Collection<IHMMState<ChurnSignal>> set = new LinkedHashSet<IHMMState<ChurnSignal>>(graph.getVertexCount());
+		for (IHMMState<ChurnSignal> state : graph.getVertices()) {
+			if (!state.isStarting())
+				set.add(state);
+		}
+		return set;
 	}
 }

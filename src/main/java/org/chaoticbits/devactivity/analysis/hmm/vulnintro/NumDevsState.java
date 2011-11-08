@@ -25,7 +25,7 @@ public class NumDevsState implements IHMMState<ChurnSignal> {
 	}
 
 	public String name() {
-		return state + ", n=" + numDevs;
+		return state.code() + numDevs;
 	}
 
 	public int getNumDevs() {

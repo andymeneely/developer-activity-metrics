@@ -38,8 +38,8 @@ public class VulnIntroStateInferenceTest {
 		Double p_n1 = map.get(hmm.find(new NumDevsState(NEUTRAL, 1)));
 		Double p_v1 = map.get(hmm.find(new NumDevsState(VULNERABLE, 1)));
 
-		assertEquals("p(v1|SN)", log10(0.333333 * 0.5), p_v1, 0.001);
-		assertEquals("p(n1|SN)", log10(0.666666 * 0.5), p_n1, 0.001);
+		assertEquals("p(v1|SN)", log10(0.333333 * 1d / 7d), p_v1, 0.001);
+		assertEquals("p(n1|SN)", log10(0.666666 * 1d / 3d), p_n1, 0.001);
 	}
 
 	@Test
@@ -74,7 +74,7 @@ public class VulnIntroStateInferenceTest {
 		// n1 v1 n2 v2 n3
 		// BN BC BN SC SN
 		IHiddenMarkovModel<ChurnSignal> hmm = new IncrementOccurrencesHMMTrainer<ChurnSignal>().train(new VulnIntroHMM(
-				new SimpleVulnIntroHMMFactory(2)), new TrainingSetParser().parse(new File(
+				new SimpleVulnIntroHMMFactory(3)), new TrainingSetParser().parse(new File(
 				"testdata/thrashingHMMTrainingTest.txt")));
 
 		Map<IHMMState<ChurnSignal>, Double> map = new ForwardBackward<ChurnSignal>().logProbInState(hmm,
@@ -85,12 +85,10 @@ public class VulnIntroStateInferenceTest {
 		Double p_n2 = pow(10d, map.get(hmm.find(new NumDevsState(NEUTRAL, 2))));
 		Double p_v2 = pow(10d, map.get(hmm.find(new NumDevsState(VULNERABLE, 2))));
 		Double p_n3 = pow(10d, map.get(hmm.find(new NumDevsState(NEUTRAL, 3))));
-		Double p_v3 = pow(10d, map.get(hmm.find(new NumDevsState(VULNERABLE, 3))));
 
 		assertTrue("p(n3) > p(n1)", p_n3 > p_n1);
 		assertTrue("p(n3) > p(n2)", p_n3 > p_n2);
 		assertTrue("p(n3) > p(v1)", p_n3 > p_v1);
 		assertTrue("p(n3) > p(v2)", p_n3 > p_v2);
-		assertTrue("p(n3) > p(v3)", p_n3 > p_v3);
 	}
 }

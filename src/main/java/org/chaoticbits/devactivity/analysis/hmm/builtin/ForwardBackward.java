@@ -27,7 +27,7 @@ public class ForwardBackward<T extends IHMMAlphabet<T>> implements IHMMStateInfe
 		startingProbs(hmm, signal, g);
 		dynamicProgrammingStep(hmm, signal, g);
 
-		return lastColumn(p_state_seq);
+		return lastColumn(signal, hmm);
 	}
 
 	private void startingProbs(IHiddenMarkovModel<T> hmm, List<T> signal,
@@ -35,26 +35,50 @@ public class ForwardBackward<T extends IHMMAlphabet<T>> implements IHMMStateInfe
 		Collection<IHMMTransition<T>> outEdges = g.getOutEdges(hmm.starting());
 		for (IHMMTransition<T> edge : outEdges) {
 			IHMMState<T> state = g.getDest(edge);
-			p_state_seq.put(new StateSeqKey<T>(state, 0),
-					log10(edge.getProbability().toDouble()) + log10(state.emissionProbability(signal.get(0))));
+			Double emitProb = state.emissionProbability(signal.get(0));
+			Double edgeProb = edge.getProbability().toDouble();
+			p_state_seq.put(new StateSeqKey<T>(state, 0), log10(edgeProb) + log10(emitProb));
 		}
 	}
 
 	private void dynamicProgrammingStep(IHiddenMarkovModel<T> hmm, List<T> signal,
 			DirectedGraph<IHMMState<T>, IHMMTransition<T>> g) {
-		throw new IllegalStateException("unimplemented!");
-		// for (int i = 1; i < signal.size(); i++) {
-		//
-		// for (IHMMTransition<T> edge : outEdges) {
-		//
-		// }
-		//
-		// p_state_seq.put(new StateSeqKey<T>(state, i)
-		// }
+		for (int i = 1; i < signal.size(); i++) {
+			for (IHMMState<T> state : hmm.emittingStates()) {
+				double prob = 0.0;
+				for (IHMMTransition<T> inEdge : g.getInEdges(state)) {
+					IHMMState<T> source = g.getSource(inEdge);
+
+					Double previousProb = p_state_seq.get(new StateSeqKey<T>(source, i - 1));
+					if (previousProb == null)
+						continue; // then this state is impossible to get to at this time
+
+					// p(state | signal_0..i) = sigma_incomingstatesS(
+					// p(S|signal_0..i-1)*inEdge*emissionProb )
+					double logP = previousProb + inEdge.getProbability().toDouble()
+							+ state.emissionProbability(signal.get(i));
+					prob += Math.pow(10d, logP);
+				}
+				p_state_seq.put(new StateSeqKey<T>(state, i), log10(prob));
+			}
+		}
 	}
 
-	private Map<IHMMState<T>, Double> lastColumn(Map<StateSeqKey<T>, Double> p_state_seq2) {
-		throw new IllegalStateException("unimplemented!");
+	/**
+	 * Go down the last column of our "array" to get the final probabilities for the last symbol in
+	 * the signal for our answer
+	 * 
+	 * @param signal
+	 * @param hmm
+	 * @return
+	 */
+	private Map<IHMMState<T>, Double> lastColumn(List<T> signal, IHiddenMarkovModel<T> hmm) {
+		int lastColumnIndex = signal.size() - 1;
+		Map<IHMMState<T>, Double> map = new HashMap<IHMMState<T>, Double>(signal.size());
+		for (IHMMState<T> state : hmm.emittingStates()) {
+			map.put(state, p_state_seq.get(new StateSeqKey<T>(state, lastColumnIndex)));
+		}
+		return map;
 	}
 
 	/**
@@ -74,7 +98,6 @@ public class ForwardBackward<T extends IHMMAlphabet<T>> implements IHMMStateInfe
 		int seqIndex;
 
 		public StateSeqKey(IHMMState<T> state, int seqIndex) {
-			super();
 			this.state = state;
 			this.seqIndex = seqIndex;
 		}
@@ -112,6 +135,11 @@ public class ForwardBackward<T extends IHMMAlphabet<T>> implements IHMMStateInfe
 
 		private ForwardBackward getOuterType() {
 			return ForwardBackward.this;
+		}
+
+		@Override
+		public String toString() {
+			return state.name() + ";" + seqIndex;
 		}
 	}
 
