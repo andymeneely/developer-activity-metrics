@@ -7,6 +7,12 @@
 	<name>Developer Activity</name>
 	<description>Code for analyzing developer activity - used in my research.</description>
 	<packaging>jar</packaging>
+	<repositories>
+		<repository>
+			<id>andy-maven</id>
+			<url>https://github.com/apmeneel/andy-maven/raw/master/releases</url>
+		</repository>
+	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>log4j</groupId>
