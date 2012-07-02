@@ -28,7 +28,8 @@ git commit -m "changing b -> bb in a.txt"
 
 sed -i 's/bb/bbb/g' a.txt
 sed -i 's/e/ee/g' a.txt
+echo -e "hh\r\nii\r\n" >> a.txt
 
 git add . 
-git commit -m "changing bb->bbb, e->ee in a.txt"
+git commit -m "changing bb->bbb, e->ee, added hh and ii in a.txt"
 
