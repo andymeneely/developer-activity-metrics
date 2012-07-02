@@ -111,6 +111,9 @@ public class LoadSVNtoDB {
 			if (dateStr.contains("2002-03-10")) {
 				dateStr = "2002-03-10T03:09:32.000000Z"; // daylight savings bug
 			}
+			if (dateStr.contains("1998-03-08")) {
+				dateStr = "1998-03-08T03:09:32.000000Z"; // daylight savings bug
+			}
 			java.util.Date parsedDate = DATE_FORMAT.parse(dateStr);
 			return new Timestamp(parsedDate.getTime());
 		} catch (ParseException e) {
