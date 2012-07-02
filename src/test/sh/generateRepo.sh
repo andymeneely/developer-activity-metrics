@@ -27,8 +27,8 @@ git add .
 git commit -m "changing b -> bb in a.txt"
 
 sed -i 's/bb/bbb/g' a.txt
-sed -i 's/a/aa/g' a.txt
+sed -i 's/e/ee/g' a.txt
 
 git add . 
-git commit -m "changing bb->bbb, a->aa in a.txt"
+git commit -m "changing bb->bbb, e->ee in a.txt"
 
