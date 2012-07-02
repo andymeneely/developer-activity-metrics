@@ -23,10 +23,12 @@ git config user.email "bob@example.com"
 
 sed -i 's/b/bb/g' a.txt
 
-#cat a.txt | sed s/b/bb/ > a.txt
-#cat a.txt | sed s/c/cc/ > a.txt
-#cat a.txt | sed s/d/dd/ > a.txt
+git add . 
+git commit -m "changing b -> bb in a.txt"
+
+sed -i 's/bb/bbb/g' a.txt
+sed -i 's/a/aa/g' a.txt
 
 git add . 
-git commit -m "changing b,c,d"
+git commit -m "changing bb->bbb, a->aa in a.txt"
 

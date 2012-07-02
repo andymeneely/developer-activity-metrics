@@ -1,3 +1,4 @@
 *.class
 graph.png
 testdata/testgitrepo/
+testdata/blame-repo/
