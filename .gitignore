@@ -2,3 +2,4 @@
 graph.png
 testdata/testgitrepo/
 testdata/blame-repo/
+src/test/sh/churn-repo/
