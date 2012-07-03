@@ -13,7 +13,7 @@ touch $OUTFILE
 for file in `find . -name "*.c" -o -name "*.h" -type f`
 do
 	echo "Working on $file..."
-	git log php-5.0.0..php-5.3.9 -p -- $file | grep -i -e "^@@" -e "^commit" >> $OUTFILE
+	git log php-5.0.0..php-5.3.9 -p -- $file | grep -i -e "^@@" -e "^commit" -e "^--- a" >> $OUTFILE
 done
 
 echo "Done."
