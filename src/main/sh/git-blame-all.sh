@@ -13,7 +13,7 @@ touch $OUTFILE
 for file in `find . -name "*.c" -o -name "*.h" -type f`
 do
 	echo "Working on $file..."
-	for revision in `git log --pretty=oneline | awk '{print $1}'`
+	for revision in `git log --pretty=oneline $file | awk '{print $1}'`
 	do
 		echo "***** Revision $revision *****" >> $OUTFILE
 		echo "***** File $file *****" >> $OUTFILE
