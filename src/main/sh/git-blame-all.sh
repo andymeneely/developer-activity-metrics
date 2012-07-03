@@ -16,9 +16,9 @@ do
 	for revision in `git log --pretty=oneline | awk '{print $1}'`
 	do
 		echo "***** Revision $revision *****" >> $OUTFILE
-		#echo "***** File $file *****" >> $OUTFILE
-		#git blame -l $revision -- $file >> $OUTFILE
-		#echo "***** End *****" >> $OUTFILE
+		echo "***** File $file *****" >> $OUTFILE
+		git blame -l $revision -- $file >> $OUTFILE
+		echo "***** End *****" >> $OUTFILE
 	done
 done
 
