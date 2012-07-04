@@ -17,7 +17,7 @@ do
 	do
 		echo "***** Revision $revision *****" >> $OUTFILE
 		echo "***** File $file *****" >> $OUTFILE
-		git blame -l $revision -- $file >> $OUTFILE
+		git blame -l $revision^ -- $file >> $OUTFILE
 		echo "***** End *****" >> $OUTFILE
 	done
 done
