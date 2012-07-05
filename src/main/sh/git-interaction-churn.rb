@@ -13,6 +13,18 @@ lines_deleted_other = 0
 author = nil
 authors_affected = Set.new 
 
+# Run blame, once for this particular file, storing as we go
+# * Leading up to the revision prior to that (hence the ^) 
+# * -l for showing long revision names 
+blame = Hash.new
+blame_text = `git blame -l #{revision}^ -- #{file}`
+blame_text.each_line { | blame_line | 
+	line_number=blame_line[/[\d]+\)/].to_i
+	blame[line_number] = blame_line
+}
+puts "Done blaming..."
+
+
 #Use git log to show only that one file at the one revision, no diff context!
 patch_text = `git log -p --unified=0 -1 #{revision} -- #{file}`
 patch_text.each_line { | line |
@@ -39,23 +51,19 @@ patch_text.each_line { | line |
 		lines_added += lines_added_num
 		lines_deleted += lines_deleted_num
 
-		#puts "For #{line.chomp}, it's #{lines_deleted_start} #{lines_deleted_num} #{lines_added_num}"
-		
-		#Now run the blame for the self/other churn
-		# * Leading up to the revision prior to that (hence the ^) 
-		# * -L for just the lines from the given revision
-		# * -l for showing long revision names 
+		# Look it up in our blame hash
 		if lines_deleted_num > 0 then
-			blame_text = `git blame -l -L #{lines_deleted_start},+#{lines_deleted_num} #{revision}^ -- #{file}`
-			blame_text.each_line { | blame_line | 
-				if blame_line.include?(author) #does not contain the author in the line?
+			line = lines_deleted_start
+			begin
+				if blame[line].include?(author) #does not contain the author in the line?
 					lines_deleted_self+=1
 				else
 					lines_deleted_other+=1
-					author_affected = blame_text.split(/[(]+/)[1].split(/[\d]{4}/)[0].chomp
-				    	authors_affected << author_affected	
+					author_affected = blame[line].split(/[(]+/)[1].split(/[\d]{4}/)[0].chomp
+				   	authors_affected << author_affected	
 				end	
-			}
+				line+=1
+			end until line > (lines_deleted_start + lines_deleted_num)
 		end
 	end 
 }
