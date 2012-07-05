@@ -22,8 +22,6 @@ blame_text.each_line { | blame_line |
 	line_number=blame_line[/[\d]+\)/].to_i
 	blame[line_number] = blame_line
 }
-puts "Done blaming..."
-
 
 #Use git log to show only that one file at the one revision, no diff context!
 patch_text = `git log -p --unified=0 -1 #{revision} -- #{file}`
