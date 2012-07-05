@@ -1,5 +1,7 @@
 #!/usr/bin/ruby
+require 'set'
 
+#input is the revision hash and the file - assume it's correct
 revision = ARGV[0]
 file = ARGV[1]
 
@@ -9,6 +11,7 @@ lines_deleted = 0
 lines_deleted_self = 0
 lines_deleted_other = 0
 author = nil
+authors_affected = Set.new 
 
 #Use git log to show only that one file at the one revision, no diff context!
 patch_text = `git log -p --unified=0 -1 #{revision} -- #{file}`
@@ -49,13 +52,19 @@ patch_text.each_line { | line |
 					lines_deleted_self+=1
 				else
 					lines_deleted_other+=1
+					author_affected = blame_text.split(/[(]+/)[1].split(/[\d]{4}/)[0].chomp
+				    	authors_affected << author_affected	
 				end	
 			}
 		end
 	end 
 }
-puts "Total Churn : #{lines_added + lines_deleted}"
-puts "Lines Added: #{lines_added}"
-puts "Lines Deleted: #{lines_deleted}"
-puts "Lines Deleted, self: #{lines_deleted_self}"
-puts "Lines Deleted, other: #{lines_deleted_other}"
+puts "Total Churn:\t#{lines_added + lines_deleted}"
+puts "Lines Added:\t#{lines_added}"
+puts "Lines Deleted:\t#{lines_deleted}"
+puts "Lines Deleted, self:\t#{lines_deleted_self}"
+puts "Lines Deleted, other:\t#{lines_deleted_other}"
+puts "Number of Authors Affected:\t#{authors_affected.size}"
+print "Authors Affected:\t"
+authors_affected.each{|a| print("#{a}\t")}
+puts ""
