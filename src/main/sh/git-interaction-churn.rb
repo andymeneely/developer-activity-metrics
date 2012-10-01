@@ -35,7 +35,7 @@ patch_text.each_line { | line |
 		lines_added_num = line.split(/[ ]+/)[2].split(/[,]+/)[1] #d
 
 		#lines_deleted_start isn't ACTUALLy negative...
-		lines_deleted_start = lines_deleted_start.to_i* -1
+		lines_deleted_start = lines_deleted_start.to_i * -1
 
 		# The _num vars are 1 if they were nil, for the ones of this format:
 		# @@ -a +c @@ (which implies a 1)
@@ -51,17 +51,18 @@ patch_text.each_line { | line |
 
 		# Look it up in our blame hash
 		if lines_deleted_num > 0 then
-			line = lines_deleted_start
-			begin
-				if blame[line].include?(author) #does not contain the author in the line?
+			num = lines_deleted_start
+			begin	
+				#does the blame line have the author of this commit?
+				if blame[num].include?(author) 
 					lines_deleted_self+=1
 				else
 					lines_deleted_other+=1
-					author_affected = blame[line].split(/[(]+/)[1].split(/[\d]{4}/)[0].chomp
+					author_affected = blame[num].split(/[(]+/)[1].split(/[\d]{4}/)[0].chomp
 				   	authors_affected << author_affected	
 				end	
-				line+=1
-			end until line > (lines_deleted_start + lines_deleted_num)
+				num+=1
+			end until num > (lines_deleted_start + lines_deleted_num - 1)
 		end
 	end 
 }
