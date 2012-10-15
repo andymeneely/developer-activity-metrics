@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<title>Code Churn Calculator</title>
+<script>
+
+function update(){
+	var lines = document.getElementById('input').value.split('\n');
+	var added = 0;
+	var deleted = 0;
+	for(var i=0; i<lines.length; i++){
+		var line = lines[i].replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+		//Starts with +, but not +++ and not all whitespace after +
+		if(line.charAt(0)=='+' && line.indexOf("+++")!=0 && line.length > 1)
+			added++;
+		else if(line.charAt(0)=='-' && line.indexOf("---")!=0 && line.length > 1) //same, but with -
+			deleted++;
+	}	
+	var output = document.getElementById('output');
+	output.innerHTML = "<pre>" + added + '\t' + deleted + "</pre>"
+}
+
+function clear_input(){
+	var lines = document.getElementById('input').value = '';
+	update();
+}
+
+</script>
+</head>
+
+<body onload="update()">
+
+<h1>Code Churn Calculator</h1>
+Paste in a diff, this will count the pluses and minuses on each line. Output: lines added, then lines deleted.
+
+<div id=output style="font-size: 200%"><pre>0	0</pre></div>
+<button id=clear style="border: 1pt sold black; float:right; font-size: 200%;" onclick="clear_input()">Clear</button> 
+<textarea rows="30" cols="80" wrap="off" id=input onkeyup="update()"></textarea>
+
+
+
+
+</body>
+
+</html>
