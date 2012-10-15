@@ -4,7 +4,14 @@ import org.chaoticbits.devactivity.analysis.hmm.Fraction;
 import org.chaoticbits.devactivity.analysis.hmm.IHMMAlphabet;
 import org.chaoticbits.devactivity.analysis.hmm.IHMMTransition;
 
+/**
+ * A simple transition class that stores the probability as a fraction. Has an optional name.
+ * @author andy
+ * 
+ * @param <T>
+ */
 public class SimpleTransition<T extends IHMMAlphabet<T>> implements IHMMTransition<T> {
+	private static int EDGE_COUNTER = 1;
 
 	private final String name;
 	private Fraction probability;
@@ -27,7 +34,7 @@ public class SimpleTransition<T extends IHMMAlphabet<T>> implements IHMMTransiti
 	}
 
 	public String name() {
-		return name == null ? "edge" : name;
+		return name == null ? "edge" + EDGE_COUNTER++ : name;
 	}
 
 	@Override

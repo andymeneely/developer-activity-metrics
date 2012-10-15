@@ -12,10 +12,20 @@ public class Fraction {
 		this.denom = denom;
 	}
 
+	/**
+	 * Returns the numerator of the fraction
+	 * 
+	 * @return
+	 */
 	public Integer getNum() {
 		return num;
 	}
 
+	/**
+	 * Returns the denominator of the fraction
+	 * 
+	 * @return
+	 */
 	public Integer getDenom() {
 		return denom;
 	}

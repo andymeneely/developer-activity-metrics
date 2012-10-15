@@ -8,9 +8,30 @@ import org.chaoticbits.devactivity.analysis.hmm.IHMMTrainer;
 import org.chaoticbits.devactivity.analysis.hmm.IHMMTrainingSymbol;
 import org.chaoticbits.devactivity.analysis.hmm.IHiddenMarkovModel;
 
-public class IncrementOccurrencesHMMTrainer<T extends IHMMAlphabet<T>> implements IHMMTrainer<T> {
+/**
+ * Train a HMM by incrementing the number of occurrences a given transition and emission appeared
+ * 
+ * Requires a list of symbols linked to states (via {@link IHMMTrainingSymbol}).
+ * 
+ * This is the trivial type of training - where we know the state for each symbol. Ordinarily, we don't have
+ * that information
+ * @author andy
+ * 
+ * @param <T>
+ */
+public class IncrementOccurrencesHMMTrainer<T extends IHMMAlphabet<T>>
+		implements IHMMTrainer<T> {
 
-	public IHiddenMarkovModel<T> train(IHiddenMarkovModel<T> hmm, List<IHMMTrainingSymbol<T>> trainingSequence) {
+	/**
+	 * 
+	 * @param hmm
+	 *            - the Hidden Markov Model to train
+	 * @param trainingSequence
+	 *            - the list of symbol-states with which to train.
+	 * 
+	 */
+	public IHiddenMarkovModel<T> train(IHiddenMarkovModel<T> hmm,
+			List<IHMMTrainingSymbol<T>> trainingSequence) {
 		IHMMState<T> current = hmm.starting();
 		for (IHMMTrainingSymbol<T> next : trainingSequence) {
 			hmm.incrementTransition(current, next.state());
