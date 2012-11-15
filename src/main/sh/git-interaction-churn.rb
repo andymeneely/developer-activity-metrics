@@ -8,6 +8,12 @@
 
 require 'set'
 
+if ARGV.size != 2
+	puts "Usage: git-interactive-churn.sh REVISION FILE"
+	puts "You must be in a git repository for this to work"
+	exit
+end
+
 # input is the revision hash and the file - assume it's correct
 revision = ARGV[0]
 file = ARGV[1]
