@@ -1,11 +1,18 @@
 #!/usr/bin/ruby
+
+# Copyright (C) 2012 Andy Meneely
+#
+# Code and Interactive churn script for Git
+#
+# Contributors: Andy Meneely
+
 require 'set'
 
-#input is the revision hash and the file - assume it's correct
+# input is the revision hash and the file - assume it's correct
 revision = ARGV[0]
 file = ARGV[1]
 
-#initialize, baby
+# initialize our counts
 lines_added = 0
 lines_deleted = 0
 lines_deleted_self = 0
@@ -21,6 +28,12 @@ blame_text = `git blame -l #{revision}^ -- #{file}`
 blame_text.each_line { | blame_line | 
 	line_number=blame_line[/[\d]+\)/].to_i
 	blame[line_number] = blame_line
+}
+
+# Determine the number of "effective authors"
+effective_authors = Set.new
+blame.each{ | num,blame_line |
+	effective_authors << blame_line.split(/[(]/)[1].split(/[\d]{4}/)[0].chomp
 }
 
 #Use git log to show only that one file at the one revision, no diff context!
@@ -74,4 +87,8 @@ puts "Lines Deleted, other:\t#{lines_deleted_other}"
 puts "Number of Authors Affected:\t#{authors_affected.size}"
 print "Authors Affected:\t"
 authors_affected.each{|a| print("#{a}\t")}
+puts ""
+puts "Number of Effective Authors:\t#{effective_authors.size}"
+print "Effective Authors:\t"
+effective_authors.each{|a| print("#{a}\t")}
 puts ""
