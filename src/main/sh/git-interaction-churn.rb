@@ -32,6 +32,7 @@ authors_affected = Set.new
 blame = Hash.new
 blame_text = `git blame -l #{revision}^ -- #{file}`
 blame_text.each_line { | blame_line | 
+        blame_line = blame_line.force_encoding("iso-8859-1")
 	line_number=blame_line[/[\d]+\)/].to_i
 	blame[line_number] = blame_line
 }
@@ -39,14 +40,14 @@ blame_text.each_line { | blame_line |
 # Determine the number of "effective authors"
 effective_authors = Set.new
 blame.each{ | num,blame_line |
-	effective_authors << blame_line.split(/[(]/)[1].split(/[\d]{4}/)[0].chomp
+	effective_authors << blame_line.split(/[(]/)[1].split(/[\d]{4}/)[0].chomp.strip
 }
 
 #Use git log to show only that one file at the one revision, no diff context!
 patch_text = `git log -p --unified=0 -1 #{revision} -- #{file}`
 patch_text.each_line { | line |
 	if line.start_with? "Author: " 
-		author = line[8..line.index(' <')].chomp # store just the author name
+		author = line[8..line.index(' <')].chomp.strip # store just the author name
 	elsif line.start_with? "@@"
 		#parsing the @@ -a,b +c,d @@
 		lines_deleted_start = line.split(/[ ]+/)[1].split(/[,]+/)[0] #a 
@@ -97,4 +98,6 @@ puts ""
 puts "Number of Effective Authors:\t#{effective_authors.size}"
 print "Effective Authors:\t"
 effective_authors.each{|a| print("#{a}\t")}
+puts ""
+puts "New effective author?\t #{effective_authors.include?(author.strip) ? "No" : "Yes"}"
 puts ""
