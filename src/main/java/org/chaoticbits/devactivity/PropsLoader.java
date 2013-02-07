@@ -7,9 +7,9 @@ import java.util.Properties;
 public class PropsLoader {
 	public static Properties getProperties(String propsFileName) throws IOException {
 		Properties props = new Properties(System.getProperties());
-		props.load(new FileInputStream(propsFileName));
+		FileInputStream fis = new FileInputStream(propsFileName);
+		props.load(fis);
+		fis.close();
 		return props;
-	}
-
-	
+	}	
 }
